@@ -1,0 +1,59 @@
+server:
+  port: 9000
+  contextPath: /Expenses
+---
+spring:
+  profiles: local, default
+  http:
+    multipart:
+      max-file-size: 2KB
+      max-request-size: 2KB
+logging:
+  file: D:/dev_app.log
+  pattern:
+    file: "%d %-5level [%thread] %logger{0} : %msg%n"
+  level:
+    org.springframework.web: ERROR
+    guru.springframework.controllers: ERROR
+    org.hibernate: ERROR
+datasource:
+  expenses:
+    url: jdbc:h2:~/test
+    username: SA
+    password:
+    driverClassName: org.h2.Driver
+    defaultSchema:
+    maxPoolSize: 10
+    hibernate:
+      hbm2ddl.method: create-drop
+      show_sql: true
+      format_sql: true
+      dialect: org.hibernate.dialect.H2Dialect
+---
+spring:
+  profiles: prod
+  http:
+    multipart:
+      max-file-size: 2KB
+      max-request-size: 2KB
+logging:
+  file: D:/dev_app.log
+  pattern:
+    file: "%d %-5level [%thread] %logger{0} : %msg%n"
+  level:
+    org.springframework.web: ERROR
+    guru.springframework.controllers: ERROR
+    org.hibernate: ERROR
+datasource:
+  expenses:
+    url: jdbc:mysql://localhost:3306/expenses
+    username: root
+    password: 
+    driverClassName: com.mysql.jdbc.Driver
+    defaultSchema:
+    maxPoolSize: 20
+    hibernate:
+      hbm2ddl.method: update
+      show_sql: true
+      format_sql: true
+      dialect: org.hibernate.dialect.MySQLDialect
