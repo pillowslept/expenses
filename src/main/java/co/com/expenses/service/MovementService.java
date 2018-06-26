@@ -41,7 +41,8 @@ public class MovementService {
         validateCreate(params);
         Type type = typeService.validateAndFind(params.getTypeId());
         Category category = categoryService.validateAndFind(params.getCategoryId());
-        Movement movement = Movement.builder().type(type)
+        Movement movement = Movement.builder()
+                .type(type)
                 .category(category)
                 .value(params.getValue())
                 .observations(params.getObservations())

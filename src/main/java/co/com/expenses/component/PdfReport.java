@@ -1,5 +1,8 @@
 package co.com.expenses.component;
 
+import static co.com.expenses.util.PdfUtils.bodyCell;
+import static co.com.expenses.util.PdfUtils.headCell;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,18 +15,15 @@ import org.springframework.stereotype.Component;
 import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import co.com.expenses.model.Movement;
 import co.com.expenses.util.DateUtilities;
+import co.com.expenses.util.PdfUtils;
 
 @Component
 public class PdfReport {
@@ -31,12 +31,8 @@ public class PdfReport {
     private static final String ERROR_WHEN_OBTAIN_IMAGE = "Ocurrió un error obteniendo el logo para el PDF, de la ruta <%s>.";
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
-    private static final int TABLE_100_PERCENT = 100;
+
     private static final String LOGO = "file:///C://Users//ceiba//Downloads//expenses.jpg";
-    private static final int FONT_SIZE_BODY = 8;
-    private static final int FONT_SIZE_HEAD = 10;
-    private static final Font HEAD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, FONT_SIZE_HEAD);
-    private static final Font BODY_FONT = FontFactory.getFont(FontFactory.HELVETICA, FONT_SIZE_BODY);
 
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
 
@@ -44,20 +40,21 @@ public class PdfReport {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            PdfPTable table = new PdfPTable(5);
-            table.setWidthPercentage(TABLE_100_PERCENT);
-            table.setWidths(new int[]{1, 4, 2, 2, 2});
+            PdfPTable table = PdfUtils.pdfTableFullWidth(6);
+            table.setWidths(new int[]{1, 1, 4, 2, 1, 1});
 
             table.addCell(headCell("Id"));
-            table.addCell(headCell("F. creación"));
             table.addCell(headCell("Valor"));
+            table.addCell(headCell("Observaciones"));
+            table.addCell(headCell("Fecha"));
             table.addCell(headCell("Tipo"));
             table.addCell(headCell("Categoría"));
 
             for (Movement movement : movements) {
                 table.addCell(bodyCell(movement.getId().toString()));
-                table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
                 table.addCell(bodyCell(movement.getValue().toString()));
+                table.addCell(bodyCell(movement.getObservations()));
+                table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
                 table.addCell(bodyCell(movement.getType().getDescription()));
                 table.addCell(bodyCell(movement.getCategory().getDescription()));
             }
@@ -67,6 +64,7 @@ public class PdfReport {
 
             document.add(createHeader(REPORT_NAME));
             document.add(table);
+            document.add(createFooter());
             document.close();
         } catch (DocumentException ex) {
             LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
@@ -78,37 +76,31 @@ public class PdfReport {
         Image image = null;
         try {
             image = Image.getInstance(new URL(LOGO));
-            image.scalePercent(20);
+            image.scalePercent(25);
         } catch (IOException | BadElementException e) {
             LOGGER.info(String.format(ERROR_WHEN_OBTAIN_IMAGE, LOGO), e);
         }
         PdfPCell cell = new PdfPCell(image);
-        alignCellToCenter(cell);
+        PdfUtils.alignCellToCenter(cell);
         return cell;
     }
 
-    private void alignCellToCenter(PdfPCell cell) {
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setBorderWidth(1);
-    }
-
     private PdfPCell getNameHeaderCell(String title) {
-        PdfPCell cell = new PdfPCell(new Paragraph(title, HEAD_FONT));
-        alignCellToCenter(cell);
+        PdfPCell cell = new PdfPCell(new Paragraph(title, PdfUtils.HEAD_FONT));
+        PdfUtils.alignCellToCenter(cell);
         return cell;
     }
 
     private PdfPCell headerCell(String name){
-        return new PdfPCell(new Paragraph(name, BODY_FONT));
+        return new PdfPCell(new Paragraph(name, PdfUtils.BODY_FONT));
     }
 
     private PdfPCell getDataHeaderCell(){
         PdfPTable table = new PdfPTable(1);
 
         table.addCell(headerCell("F. de generación: " + DateUtilities.getActualDate()));
-        table.addCell(headerCell("Nombre: " + "dsajdksajdksaj dksajdksa"));
-        table.addCell(headerCell("Email: " + "juan djsdksjdks"));
+        table.addCell(headerCell("Nombre: " + "Juan Camilo Velásquez"));
+        table.addCell(headerCell("Fecha: " + "12/12/2018 a 12/12/2019"));
         table.addCell(headerCell(""));
 
         PdfPCell cell = new PdfPCell(table);
@@ -118,8 +110,7 @@ public class PdfReport {
     }
 
     private PdfPTable createHeader(String reportName) {
-        PdfPTable table = new PdfPTable(3);
-        table.setWidthPercentage(TABLE_100_PERCENT);
+        PdfPTable table = PdfUtils.pdfTableFullWidth(3);
 
         table.addCell(getImageHeaderCell());
         table.addCell(getNameHeaderCell(reportName));
@@ -129,16 +120,20 @@ public class PdfReport {
         return table;
     }
 
-    private PdfPCell headCell(String name){
-        PdfPCell hcell = new PdfPCell(new Phrase(name, HEAD_FONT));
-        hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        return hcell;
+    private PdfPTable createFooter() {
+        PdfPTable table = PdfUtils.pdfTableFullWidth(3);
+
+        table.addCell(headCell("Ingresos"));
+        table.addCell(headCell("Egresos"));
+        table.addCell(headCell("Total"));
+
+        table.addCell(bodyCell("50000"));
+        table.addCell(bodyCell("150000"));
+        table.addCell(bodyCell("100000"));
+
+        table.setSpacingBefore(10);
+
+        return table;
     }
 
-    private PdfPCell bodyCell(String attribute){
-        PdfPCell cell = new PdfPCell(new Phrase(attribute, BODY_FONT));
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        return cell;
-    }
 }
