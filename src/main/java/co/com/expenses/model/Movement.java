@@ -15,12 +15,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "MOVEMENT")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Movement implements Serializable {
 

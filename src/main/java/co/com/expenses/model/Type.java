@@ -12,12 +12,16 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "TYPE")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Type implements Serializable {
 
