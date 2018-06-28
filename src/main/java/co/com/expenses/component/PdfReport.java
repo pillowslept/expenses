@@ -1,11 +1,13 @@
 package co.com.expenses.component;
 
+import static co.com.expenses.util.CurrencyUtilities.formatValue;
 import static co.com.expenses.util.PdfUtils.bodyCell;
 import static co.com.expenses.util.PdfUtils.headCell;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import co.com.expenses.dto.Resume;
 import co.com.expenses.model.Movement;
 import co.com.expenses.util.DateUtilities;
 import co.com.expenses.util.PdfUtils;
@@ -50,13 +53,16 @@ public class PdfReport {
             table.addCell(headCell("Tipo"));
             table.addCell(headCell("Categoría"));
 
+            Resume resume = initializeResume();
+
             for (Movement movement : movements) {
                 table.addCell(bodyCell(movement.getId().toString()));
-                table.addCell(bodyCell(movement.getValue().toString()));
+                table.addCell(bodyCell(formatValue(movement.getValue())));
                 table.addCell(bodyCell(movement.getObservations()));
                 table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
                 table.addCell(bodyCell(movement.getType().getDescription()));
                 table.addCell(bodyCell(movement.getCategory().getDescription()));
+                recalculateResume(resume, movement);
             }
 
             PdfWriter.getInstance(document, out);
@@ -64,12 +70,30 @@ public class PdfReport {
 
             document.add(createHeader(REPORT_NAME));
             document.add(table);
-            document.add(createFooter());
+            document.add(createFooter(resume));
             document.close();
         } catch (DocumentException ex) {
             LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
         }
         return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    private Resume initializeResume() {
+        return Resume.builder()
+                .expenses(BigDecimal.ZERO)
+                .incomes(BigDecimal.ZERO)
+                .total(BigDecimal.ZERO)
+                .build();
+    }
+
+    private void recalculateResume(Resume resume, Movement movement) {
+        if(movement.getType().getId().equals(1L)) {
+            resume.setIncomes(resume.getIncomes().add(movement.getValue()));
+            resume.setTotal(resume.getTotal().add(movement.getValue()));
+        }else {
+            resume.setExpenses(resume.getExpenses().add(movement.getValue()));
+            resume.setTotal(resume.getTotal().subtract(movement.getValue()));
+        }
     }
 
     private PdfPCell getImageHeaderCell() {
@@ -120,16 +144,16 @@ public class PdfReport {
         return table;
     }
 
-    private PdfPTable createFooter() {
+    private PdfPTable createFooter(Resume resume) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(3);
 
         table.addCell(headCell("Ingresos"));
         table.addCell(headCell("Egresos"));
         table.addCell(headCell("Total"));
 
-        table.addCell(bodyCell("50000"));
-        table.addCell(bodyCell("150000"));
-        table.addCell(bodyCell("100000"));
+        table.addCell(bodyCell(formatValue(resume.getIncomes())));
+        table.addCell(bodyCell(formatValue(resume.getExpenses())));
+        table.addCell(bodyCell(formatValue(resume.getTotal())));
 
         table.setSpacingBefore(10);
 
