@@ -6,15 +6,14 @@ import static co.com.expenses.util.PdfUtils.headCell;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.itextpdf.text.BadElementException;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -23,6 +22,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import co.com.expenses.dto.ChartSeries;
 import co.com.expenses.dto.Resume;
 import co.com.expenses.model.Movement;
 import co.com.expenses.util.DateUtilities;
@@ -31,7 +31,6 @@ import co.com.expenses.util.PdfUtils;
 @Component
 public class PdfReport {
 
-    private static final String ERROR_WHEN_OBTAIN_IMAGE = "Ocurrió un error obteniendo el logo para el PDF, de la ruta <%s>.";
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
 
@@ -39,11 +38,14 @@ public class PdfReport {
 
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
 
+    @Autowired
+    Charts charts;
+    
     public ByteArrayInputStream generate(List<Movement> movements) {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            PdfPTable table = PdfUtils.pdfTableFullWidth(6);
+            PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.SIX_COLUMNS);
             table.setWidths(new int[]{1, 1, 4, 2, 1, 1});
 
             table.addCell(headCell("Id"));
@@ -70,7 +72,8 @@ public class PdfReport {
 
             document.add(createHeader(REPORT_NAME));
             document.add(table);
-            document.add(createFooter(resume));
+            document.add(createResume(resume));
+            document.add(printCharts(resume));
             document.close();
         } catch (DocumentException ex) {
             LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
@@ -97,13 +100,8 @@ public class PdfReport {
     }
 
     private PdfPCell getImageHeaderCell() {
-        Image image = null;
-        try {
-            image = Image.getInstance(new URL(LOGO));
-            image.scalePercent(25);
-        } catch (IOException | BadElementException e) {
-            LOGGER.info(String.format(ERROR_WHEN_OBTAIN_IMAGE, LOGO), e);
-        }
+        Image image = PdfUtils.image(LOGO);
+        image.scalePercent(25);
         PdfPCell cell = new PdfPCell(image);
         PdfUtils.alignCellToCenter(cell);
         return cell;
@@ -120,7 +118,7 @@ public class PdfReport {
     }
 
     private PdfPCell getDataHeaderCell(){
-        PdfPTable table = new PdfPTable(1);
+        PdfPTable table = new PdfPTable(PdfUtils.ONE_COLUMN);
 
         table.addCell(headerCell("F. de generación: " + DateUtilities.getActualDate()));
         table.addCell(headerCell("Nombre: " + "Juan Camilo Velásquez"));
@@ -134,7 +132,7 @@ public class PdfReport {
     }
 
     private PdfPTable createHeader(String reportName) {
-        PdfPTable table = PdfUtils.pdfTableFullWidth(3);
+        PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
         table.addCell(getImageHeaderCell());
         table.addCell(getNameHeaderCell(reportName));
@@ -144,12 +142,12 @@ public class PdfReport {
         return table;
     }
 
-    private PdfPTable createFooter(Resume resume) {
-        PdfPTable table = PdfUtils.pdfTableFullWidth(3);
+    private PdfPTable createResume(Resume resume) {
+        PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
-        table.addCell(headCell("Ingresos"));
-        table.addCell(headCell("Egresos"));
-        table.addCell(headCell("Total"));
+        table.addCell(headCell("Ingresos (I)"));
+        table.addCell(headCell("Egresos (E)"));
+        table.addCell(headCell("Total (T)"));
 
         table.addCell(bodyCell(formatValue(resume.getIncomes())));
         table.addCell(bodyCell(formatValue(resume.getExpenses())));
@@ -160,4 +158,28 @@ public class PdfReport {
         return table;
     }
 
+    private PdfPTable printCharts(Resume resume) {
+        PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
+
+        byte[] graphicBytes = charts.bytes(charts.pie(generateChartSeries()));
+        PdfPCell cell = new PdfPCell(PdfUtils.image(graphicBytes));
+        cell.setBorder(0);
+        cell.setColspan(3);
+        PdfUtils.alignCellToCenter(cell);
+        table.addCell(cell);
+
+        table.setSpacingBefore(1);
+
+        return table;
+    }
+
+    private List<ChartSeries> generateChartSeries() {
+        List<ChartSeries> listChartSeries = new ArrayList<>();
+        listChartSeries.add(charts.buildSerie("Ropa", 25000));
+        listChartSeries.add(charts.buildSerie("Comida", 10000));
+        listChartSeries.add(charts.buildSerie("Gasolina", 15000));
+        listChartSeries.add(charts.buildSerie("Copper", 25000));
+        listChartSeries.add(charts.buildSerie("Zinc", 25000));
+        return listChartSeries;
+    }
 }
