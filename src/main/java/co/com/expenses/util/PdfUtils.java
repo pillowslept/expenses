@@ -27,6 +27,8 @@ public class PdfUtils {
     public static final int ONE_COLUMN = 1;
     public static final int SIX_COLUMNS = 6;
 
+    public static final int SPACING_BEFORE_TEN = 10;
+
     public static final Font HEAD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, FONT_SIZE_HEAD);
     public static final Font BODY_FONT = FontFactory.getFont(FontFactory.HELVETICA, FONT_SIZE_BODY);
 
