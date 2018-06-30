@@ -8,7 +8,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import co.com.expenses.dto.ChartSeries;
 import co.com.expenses.dto.Resume;
 import co.com.expenses.model.Movement;
+import co.com.expenses.service.CategoryService;
 import co.com.expenses.util.DateUtilities;
 import co.com.expenses.util.PdfUtils;
 
@@ -40,7 +44,10 @@ public class PdfReport {
 
     @Autowired
     Charts charts;
-    
+
+    @Autowired
+    CategoryService categoryService;
+
     public ByteArrayInputStream generate(List<Movement> movements) {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -56,6 +63,7 @@ public class PdfReport {
             table.addCell(headCell("Categoría"));
 
             Resume resume = initializeResume();
+            HashMap<Long, String> categories = new HashMap<>();
 
             for (Movement movement : movements) {
                 table.addCell(bodyCell(movement.getId().toString()));
@@ -65,6 +73,7 @@ public class PdfReport {
                 table.addCell(bodyCell(movement.getType().getDescription()));
                 table.addCell(bodyCell(movement.getCategory().getDescription()));
                 recalculateResume(resume, movement);
+                categories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
             }
 
             PdfWriter.getInstance(document, out);
@@ -73,7 +82,7 @@ public class PdfReport {
             document.add(createHeader(REPORT_NAME));
             document.add(table);
             document.add(createResume(resume));
-            document.add(printCharts(resume));
+            document.add(printCharts(movements, categories));
             document.close();
         } catch (DocumentException ex) {
             LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
@@ -137,7 +146,7 @@ public class PdfReport {
         table.addCell(getImageHeaderCell());
         table.addCell(getNameHeaderCell(reportName));
         table.addCell(getDataHeaderCell());
-        table.setSpacingAfter(10);
+        table.setSpacingAfter(PdfUtils.SPACING_BEFORE_TEN);
 
         return table;
     }
@@ -145,27 +154,28 @@ public class PdfReport {
     private PdfPTable createResume(Resume resume) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
-        table.addCell(headCell("Ingresos (I)"));
-        table.addCell(headCell("Egresos (E)"));
-        table.addCell(headCell("Total (T)"));
+        table.addCell(headCell("Ingresos"));
+        table.addCell(headCell("Egresos"));
+        table.addCell(headCell("Total"));
 
         table.addCell(bodyCell(formatValue(resume.getIncomes())));
         table.addCell(bodyCell(formatValue(resume.getExpenses())));
         table.addCell(bodyCell(formatValue(resume.getTotal())));
 
-        table.setSpacingBefore(10);
+        table.setSpacingBefore(PdfUtils.SPACING_BEFORE_TEN);
 
         return table;
     }
 
-    private PdfPTable printCharts(Resume resume) {
-        PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
+    private PdfPTable printCharts(List<Movement> movements, HashMap<Long, String> categories) {
+        PdfPTable table = PdfUtils.pdfTableFullWidth(2);
 
-        byte[] graphicBytes = charts.bytes(charts.pie(generateChartSeries()));
+        List<ChartSeries> chartSeries = generateChartSeries(movements, categories);
+        byte[] graphicBytes = charts.bytes(charts.pie(chartSeries, "Ingresos"));
         PdfPCell cell = new PdfPCell(PdfUtils.image(graphicBytes));
         cell.setBorder(0);
-        cell.setColspan(3);
         PdfUtils.alignCellToCenter(cell);
+        table.addCell(cell);
         table.addCell(cell);
 
         table.setSpacingBefore(1);
@@ -173,13 +183,19 @@ public class PdfReport {
         return table;
     }
 
-    private List<ChartSeries> generateChartSeries() {
+    private List<ChartSeries> generateChartSeries(List<Movement> movements, HashMap<Long, String> categories) {
         List<ChartSeries> listChartSeries = new ArrayList<>();
-        listChartSeries.add(charts.buildSerie("Ropa", 25000));
-        listChartSeries.add(charts.buildSerie("Comida", 10000));
-        listChartSeries.add(charts.buildSerie("Gasolina", 15000));
-        listChartSeries.add(charts.buildSerie("Copper", 25000));
-        listChartSeries.add(charts.buildSerie("Zinc", 25000));
+        categories.entrySet().stream()
+                .forEach(category -> listChartSeries.add(calculateTotalByCategory(movements, category)));
         return listChartSeries;
+    }
+
+    private ChartSeries calculateTotalByCategory(List<Movement> movements, Map.Entry<Long, String> category) {
+        List<Movement> movementsByCategory = movements.stream()
+                .filter(m -> m.getCategory().getId().intValue() == category.getKey().intValue())
+                .collect(Collectors.toList());
+        BigDecimal totalByCategory = movementsByCategory.stream().map(Movement::getValue).reduce(BigDecimal.ZERO,
+                BigDecimal::add);
+        return charts.buildSerie(category.getValue(), totalByCategory);
     }
 }
