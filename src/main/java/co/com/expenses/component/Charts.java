@@ -17,15 +17,15 @@ import co.com.expenses.dto.ChartSeries;
 @Component
 public class Charts {
 
-    private static final int HEIGHT = 250;
-    private static final int WIDTH = 350;
+    private static final int HEIGHT = 175;
+    private static final int WIDTH = 275;
 
     private static final String ERROR_OBTAINING_BYTES = "Ocurrió un error obteniendo los bytes para la gráfica";
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
 
-    public PieChart pie(List<ChartSeries> listChartSeries) {
+    public PieChart pie(List<ChartSeries> listChartSeries, String title) {
 
-        PieChart chart = new PieChartBuilder().width(WIDTH).height(HEIGHT).build();
+        PieChart chart = new PieChartBuilder().width(WIDTH).height(HEIGHT).title(title).build();
 
         listChartSeries.stream().forEach(ch -> chart.addSeries(ch.getName(), ch.getValue()));
 
