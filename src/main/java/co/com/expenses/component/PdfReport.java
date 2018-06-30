@@ -35,6 +35,11 @@ import co.com.expenses.util.PdfUtils;
 @Component
 public class PdfReport {
 
+    private static final String TOTAL_TITLE = "Total";
+    private static final String EXPENSES_TITLE = "Egresos";
+    private static final String INCOMES_TITLE = "Ingresos";
+    private static final Long INCOME_TYPE = 1L;
+    private static final Long EXPENSE_TYPE = 2L;
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
 
@@ -63,7 +68,8 @@ public class PdfReport {
             table.addCell(headCell("Categoría"));
 
             Resume resume = initializeResume();
-            HashMap<Long, String> categories = new HashMap<>();
+            HashMap<Long, String> incomeCategories = new HashMap<>();
+            HashMap<Long, String> expenseCategories = new HashMap<>();
 
             for (Movement movement : movements) {
                 table.addCell(bodyCell(movement.getId().toString()));
@@ -73,7 +79,7 @@ public class PdfReport {
                 table.addCell(bodyCell(movement.getType().getDescription()));
                 table.addCell(bodyCell(movement.getCategory().getDescription()));
                 recalculateResume(resume, movement);
-                categories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
+                validateCategories(movement, incomeCategories, expenseCategories);
             }
 
             PdfWriter.getInstance(document, out);
@@ -82,12 +88,22 @@ public class PdfReport {
             document.add(createHeader(REPORT_NAME));
             document.add(table);
             document.add(createResume(resume));
-            document.add(printCharts(movements, categories));
+            document.add(printCharts(movements, incomeCategories, expenseCategories));
             document.close();
         } catch (DocumentException ex) {
             LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
         }
         return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    private void validateCategories(Movement movement, HashMap<Long, String> incomeCategories,
+            HashMap<Long, String> expenseCategories) {
+        Long typeId = movement.getType().getId();
+        if (INCOME_TYPE.equals(typeId)) {
+            incomeCategories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
+        } else if (EXPENSE_TYPE.equals(typeId)) {
+            expenseCategories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
+        }
     }
 
     private Resume initializeResume() {
@@ -154,9 +170,9 @@ public class PdfReport {
     private PdfPTable createResume(Resume resume) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
-        table.addCell(headCell("Ingresos"));
-        table.addCell(headCell("Egresos"));
-        table.addCell(headCell("Total"));
+        table.addCell(headCell(INCOMES_TITLE));
+        table.addCell(headCell(EXPENSES_TITLE));
+        table.addCell(headCell(TOTAL_TITLE));
 
         table.addCell(bodyCell(formatValue(resume.getIncomes())));
         table.addCell(bodyCell(formatValue(resume.getExpenses())));
@@ -167,20 +183,25 @@ public class PdfReport {
         return table;
     }
 
-    private PdfPTable printCharts(List<Movement> movements, HashMap<Long, String> categories) {
+    private PdfPTable printCharts(List<Movement> movements, HashMap<Long, String> incomeCategories,
+            HashMap<Long, String> expenseCategories) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(2);
 
-        List<ChartSeries> chartSeries = generateChartSeries(movements, categories);
-        byte[] graphicBytes = charts.bytes(charts.pie(chartSeries, "Ingresos"));
-        PdfPCell cell = new PdfPCell(PdfUtils.image(graphicBytes));
-        cell.setBorder(0);
-        PdfUtils.alignCellToCenter(cell);
-        table.addCell(cell);
-        table.addCell(cell);
+        table.addCell(buildChartByCategory(movements, incomeCategories, INCOMES_TITLE));
+        table.addCell(buildChartByCategory(movements, expenseCategories, EXPENSES_TITLE));
 
         table.setSpacingBefore(1);
 
         return table;
+    }
+
+    private PdfPCell buildChartByCategory(List<Movement> movements, HashMap<Long, String> categories, String title) {
+        List<ChartSeries> chartSeries = generateChartSeries(movements, categories);
+        byte[] graphicBytes = charts.bytes(charts.pie(chartSeries, title));
+        PdfPCell cell = new PdfPCell(PdfUtils.image(graphicBytes));
+        cell.setBorder(0);
+        PdfUtils.alignCellToCenter(cell);
+        return cell;
     }
 
     private List<ChartSeries> generateChartSeries(List<Movement> movements, HashMap<Long, String> categories) {
