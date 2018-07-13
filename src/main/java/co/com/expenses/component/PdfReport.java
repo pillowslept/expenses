@@ -27,6 +27,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 import co.com.expenses.dto.ChartSeries;
 import co.com.expenses.dto.Resume;
+import co.com.expenses.enums.Type;
 import co.com.expenses.model.Movement;
 import co.com.expenses.service.CategoryService;
 import co.com.expenses.util.DateUtilities;
@@ -38,8 +39,6 @@ public class PdfReport {
     private static final String TOTAL_TITLE = "Total";
     private static final String EXPENSES_TITLE = "Egresos";
     private static final String INCOMES_TITLE = "Ingresos";
-    private static final Long INCOME_TYPE = 1L;
-    private static final Long EXPENSE_TYPE = 2L;
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
 
@@ -77,7 +76,7 @@ public class PdfReport {
                 table.addCell(bodyCell(formatValue(movement.getValue())));
                 table.addCell(bodyCell(movement.getObservations()));
                 table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
-                
+
                 recalculateResume(resume, movement);
                 validateCategories(movement, incomeCategories, expenseCategories);
             }
@@ -99,9 +98,9 @@ public class PdfReport {
     private void validateCategories(Movement movement, HashMap<Long, String> incomeCategories,
             HashMap<Long, String> expenseCategories) {
         Long typeId = movement.getType().getId();
-        if (INCOME_TYPE.equals(typeId)) {
+        if (Type.INCOME.get().equals(typeId)) {
             incomeCategories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
-        } else if (EXPENSE_TYPE.equals(typeId)) {
+        } else if (Type.EXPENSE.get().equals(typeId)) {
             expenseCategories.put(movement.getCategory().getId(), movement.getCategory().getDescription());
         }
     }
@@ -115,7 +114,7 @@ public class PdfReport {
     }
 
     private void recalculateResume(Resume resume, Movement movement) {
-        if(movement.getType().getId().equals(1L)) {
+        if(movement.getType().getId().equals(Type.INCOME.get())) {
             resume.setIncomes(resume.getIncomes().add(movement.getValue()));
             resume.setTotal(resume.getTotal().add(movement.getValue()));
         }else {
