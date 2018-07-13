@@ -25,6 +25,7 @@ public class PdfUtils {
 
     public static final int THREE_COLUMNS = 3;
     public static final int ONE_COLUMN = 1;
+    public static final int FIVE_COLUMNS = 5;
     public static final int SIX_COLUMNS = 6;
 
     public static final int SPACING_BEFORE_TEN = 10;
