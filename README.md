@@ -10,7 +10,7 @@ Services to manage expenses and incomes
 
 * Generate a PDF report with all the movements
 
-* Visualize a chart with the resumen of the movements
+* Visualize a chart with the summary of the movements
 
 ## Defined services
 
