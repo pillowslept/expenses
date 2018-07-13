@@ -57,27 +57,27 @@ public class PdfReport {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
-            PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.SIX_COLUMNS);
-            table.setWidths(new int[]{1, 1, 4, 2, 1, 1});
+            PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.FIVE_COLUMNS);
+            table.setWidths(new int[]{1, 1, 1, 5, 2});
 
-            table.addCell(headCell("Id"));
+            table.addCell(headCell("Tipo"));
+            table.addCell(headCell("Categoría"));
             table.addCell(headCell("Valor"));
             table.addCell(headCell("Observaciones"));
             table.addCell(headCell("Fecha"));
-            table.addCell(headCell("Tipo"));
-            table.addCell(headCell("Categoría"));
+            
 
             Resume resume = initializeResume();
             HashMap<Long, String> incomeCategories = new HashMap<>();
             HashMap<Long, String> expenseCategories = new HashMap<>();
 
             for (Movement movement : movements) {
-                table.addCell(bodyCell(movement.getId().toString()));
+                table.addCell(bodyCell(movement.getType().getDescription()));
+                table.addCell(bodyCell(movement.getCategory().getDescription()));
                 table.addCell(bodyCell(formatValue(movement.getValue())));
                 table.addCell(bodyCell(movement.getObservations()));
                 table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
-                table.addCell(bodyCell(movement.getType().getDescription()));
-                table.addCell(bodyCell(movement.getCategory().getDescription()));
+                
                 recalculateResume(resume, movement);
                 validateCategories(movement, incomeCategories, expenseCategories);
             }
