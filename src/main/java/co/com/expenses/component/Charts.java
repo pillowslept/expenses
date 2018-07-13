@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
-import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.springframework.stereotype.Component;
 
 import co.com.expenses.dto.ChartSeries;
@@ -17,8 +17,8 @@ import co.com.expenses.dto.ChartSeries;
 @Component
 public class Charts {
 
-    private static final int HEIGHT = 175;
-    private static final int WIDTH = 275;
+    private static final int HEIGHT = 165;
+    private static final int WIDTH = 265;
 
     private static final String ERROR_OBTAINING_BYTES = "Ocurrió un error obteniendo los bytes para la gráfica";
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
@@ -32,6 +32,7 @@ public class Charts {
         chart.getStyler().setChartBackgroundColor(WHITE);
         chart.getStyler().setLegendBorderColor(WHITE);
         chart.getStyler().setPlotBorderColor(WHITE);
+        chart.getStyler().setLegendPadding(2);
 
         return chart;
     }
