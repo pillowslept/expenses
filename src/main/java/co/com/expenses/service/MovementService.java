@@ -80,4 +80,8 @@ public class MovementService {
     public List<Movement> findAll() {
         return movementRepository.findAll();
     }
+
+    public List<Movement> findAllByOrderByCreationDateAsc() {
+        return movementRepository.findAllByOrderByCreationDateAsc();
+    }
 }

@@ -21,7 +21,7 @@ public class ReportService {
     PdfReport generatePdfReport;
 
     public ByteArrayInputStream generate() {
-        List<Movement> movements = movementService.findAll();
+        List<Movement> movements = movementService.findAllByOrderByCreationDateAsc();
         return generatePdfReport.generate(movements);
     }
 
