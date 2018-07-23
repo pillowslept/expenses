@@ -16,5 +16,6 @@ public class Params implements Serializable {
     private BigDecimal value;
     private String observations;
     private String description;
+    private String date;
 
 }
