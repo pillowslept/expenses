@@ -22,6 +22,7 @@ public class MovementService {
     private static final String MOVEMENT_CREATED = "Movimiento creado con éxito, identificador generado es <%d>";
     private static final String MOVEMENT_NOT_FOUND = "El movimiento con identificador <%d> no existe en la base de datos";
     private static final String VALUE_NOT_VALID = "El campo <value> no es válido";
+    private static final String DATE_NOT_VALID = "El campo <date> no es válido";
     private static final String MOVEMENT_ID_NOT_VALID = "El campo <movementId> no es válido";
 
     @Autowired
@@ -46,7 +47,7 @@ public class MovementService {
                 .category(category)
                 .value(params.getValue())
                 .observations(params.getObservations())
-                .creationDate(DateUtilities.getTimestamp())
+                .creationDate(DateUtilities.toTimestamp(params.getDate()))
                 .build();
         movementRepository.save(movement);
         return String.format(MOVEMENT_CREATED, movement.getId());
@@ -56,6 +57,10 @@ public class MovementService {
         if (Validations.field(params.getValue())) {
             throw new ValidateException(VALUE_NOT_VALID);
         }
+        if (Validations.field(params.getDate())) {
+            throw new ValidateException(DATE_NOT_VALID);
+        }
+        DateUtilities.validateStringInFormat(params.getDate());
     }
 
     public Movement validateAndFind(Long id) {
