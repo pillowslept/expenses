@@ -5,6 +5,8 @@ import java.util.List;
 
 public class Validations {
 
+    private Validations() {}
+
     public static boolean field(String field) {
         return field == null || field.isEmpty();
     }
