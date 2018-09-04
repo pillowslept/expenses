@@ -9,6 +9,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +32,11 @@ public class ReportController {
     @RequestMapping(value = "/generate", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byRequest() {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.generate());
+    }
+
+    @RequestMapping(value = "/byMonth/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> byMonth(@PathVariable("month") int month) {
+        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonth(month));
     }
 
     private ResponseEntity<InputStreamResource> buildResponse(String name,

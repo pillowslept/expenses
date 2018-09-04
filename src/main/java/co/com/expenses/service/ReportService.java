@@ -25,4 +25,8 @@ public class ReportService {
         return generatePdfReport.generate(movements);
     }
 
+    public ByteArrayInputStream byMonth(int month) {
+        List<Movement> movements = movementService.findByCreationDateBetween(month);
+        return generatePdfReport.generate(movements);
+    }
 }
