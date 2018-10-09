@@ -7,6 +7,7 @@ import static co.com.expenses.util.PdfUtils.headCell;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +43,7 @@ public class PdfReport {
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
 
-    private static final String LOGO = "file:///C://Users//ceiba//Downloads//expenses.jpg";
+    private static final String LOGO = "/images/expenses.jpg";
 
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
 
@@ -64,7 +65,6 @@ public class PdfReport {
             table.addCell(headCell("Valor"));
             table.addCell(headCell("Observaciones"));
             table.addCell(headCell("Fecha"));
-            
 
             Resume resume = initializeResume();
             HashMap<Long, String> incomeCategories = new HashMap<>();
@@ -124,7 +124,8 @@ public class PdfReport {
     }
 
     private PdfPCell getImageHeaderCell() {
-        Image image = PdfUtils.image(LOGO);
+        URL imageUrl = getClass().getResource(LOGO);
+        Image image = PdfUtils.image(imageUrl);
         image.scalePercent(25);
         PdfPCell cell = new PdfPCell(image);
         PdfUtils.alignCellToCenter(cell);

@@ -71,10 +71,10 @@ public class PdfUtils {
         return image;
     }
 
-    public static Image image(String url) {
+    public static Image image(URL url) {
         Image image = null;
         try {
-            image = Image.getInstance(new URL(url));
+            image = Image.getInstance(url);
         } catch (BadElementException | IOException e) {
             LOGGER.info(String.format("Ocurrió un error obteniendo la imagen a partir de la URL %s", url), e);
         }

@@ -98,6 +98,7 @@ public class MovementService {
         }
         Date startDate = DateUtilities.obtainBeginingOfDate(month);
         Date endDate = DateUtilities.obtainEndOfDate(month);
-        return movementRepository.findByCreationDateBetween(startDate, endDate);
+        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
     }
+
 }
