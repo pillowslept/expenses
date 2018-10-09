@@ -30,6 +30,10 @@ http://localhost:9000/Expenses/api/movement/create *PUT*
 http://localhost:9000/Expenses/api/report/generate *GET*
 ```
 
+```
+http://localhost:9000/Expenses/api/report/byMonth/{month} *GET*
+```
+
 ## Author
 
 * **Juan Camilo Velásquez Vanegas** - [Juan Camilo Velásquez](https://github.com/pillowslept)
