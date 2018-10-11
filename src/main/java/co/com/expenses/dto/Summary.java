@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Resume implements Serializable {
+public class Summary implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

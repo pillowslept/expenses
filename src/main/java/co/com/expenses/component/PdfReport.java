@@ -27,7 +27,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import co.com.expenses.dto.ChartSeries;
-import co.com.expenses.dto.Resume;
+import co.com.expenses.dto.Summary;
 import co.com.expenses.enums.Type;
 import co.com.expenses.model.Movement;
 import co.com.expenses.service.CategoryService;
@@ -66,7 +66,7 @@ public class PdfReport {
             table.addCell(headCell("Observaciones"));
             table.addCell(headCell("Fecha"));
 
-            Resume resume = initializeResume();
+            Summary summary = initializeSummary();
             HashMap<Long, String> incomeCategories = new HashMap<>();
             HashMap<Long, String> expenseCategories = new HashMap<>();
 
@@ -77,7 +77,7 @@ public class PdfReport {
                 table.addCell(bodyCell(movement.getObservations()));
                 table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
 
-                recalculateResume(resume, movement);
+                recalculateSummary(summary, movement);
                 validateCategories(movement, incomeCategories, expenseCategories);
             }
 
@@ -86,7 +86,7 @@ public class PdfReport {
 
             document.add(createHeader(REPORT_NAME));
             document.add(table);
-            document.add(createResume(resume));
+            document.add(createSummary(summary));
             document.add(printCharts(movements, incomeCategories, expenseCategories));
             document.close();
         } catch (DocumentException ex) {
@@ -105,21 +105,21 @@ public class PdfReport {
         }
     }
 
-    private Resume initializeResume() {
-        return Resume.builder()
+    private Summary initializeSummary() {
+        return Summary.builder()
                 .expenses(BigDecimal.ZERO)
                 .incomes(BigDecimal.ZERO)
                 .total(BigDecimal.ZERO)
                 .build();
     }
 
-    private void recalculateResume(Resume resume, Movement movement) {
+    private void recalculateSummary(Summary summary, Movement movement) {
         if(movement.getType().getId().equals(Type.INCOME.get())) {
-            resume.setIncomes(resume.getIncomes().add(movement.getValue()));
-            resume.setTotal(resume.getTotal().add(movement.getValue()));
+            summary.setIncomes(summary.getIncomes().add(movement.getValue()));
+            summary.setTotal(summary.getTotal().add(movement.getValue()));
         }else {
-            resume.setExpenses(resume.getExpenses().add(movement.getValue()));
-            resume.setTotal(resume.getTotal().subtract(movement.getValue()));
+            summary.setExpenses(summary.getExpenses().add(movement.getValue()));
+            summary.setTotal(summary.getTotal().subtract(movement.getValue()));
         }
     }
 
@@ -167,16 +167,16 @@ public class PdfReport {
         return table;
     }
 
-    private PdfPTable createResume(Resume resume) {
+    private PdfPTable createSummary(Summary summary) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
         table.addCell(headCell(INCOMES_TITLE));
         table.addCell(headCell(EXPENSES_TITLE));
         table.addCell(headCell(TOTAL_TITLE));
 
-        table.addCell(bodyCell(formatValue(resume.getIncomes())));
-        table.addCell(bodyCell(formatValue(resume.getExpenses())));
-        table.addCell(bodyCell(formatValue(resume.getTotal())));
+        table.addCell(bodyCell(formatValue(summary.getIncomes())));
+        table.addCell(bodyCell(formatValue(summary.getExpenses())));
+        table.addCell(bodyCell(formatValue(summary.getTotal())));
 
         table.setSpacingBefore(PdfUtils.SPACING_BEFORE_TEN);
 
