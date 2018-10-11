@@ -3,10 +3,13 @@ package co.com.expenses.service;
 import java.util.Date;
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
@@ -84,8 +87,10 @@ public class MovementService {
         movementRepository.save(movement);
     }
 
-    public List<Movement> findAll() {
-        return movementRepository.findAll();
+    public List<MovementSummary> findAll() {
+        java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(movementRepository.findAll(), targetListType);
     }
 
     public List<Movement> findAllByOrderByCreationDateAsc() {
