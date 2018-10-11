@@ -27,6 +27,10 @@ http://localhost:9000/Expenses/api/movement/create *PUT*
 ```
 
 ```
+http://localhost:9000/Expenses/api/movement/all *GET*
+```
+
+```
 http://localhost:9000/Expenses/api/report/generate *GET*
 ```
 
