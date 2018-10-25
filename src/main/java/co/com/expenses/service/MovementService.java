@@ -90,7 +90,7 @@ public class MovementService {
     public List<MovementSummary> findAll() {
         java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(movementRepository.findAll(), targetListType);
+        return modelMapper.map(findAllByOrderByCreationDateAsc(), targetListType);
     }
 
     public List<Movement> findAllByOrderByCreationDateAsc() {
