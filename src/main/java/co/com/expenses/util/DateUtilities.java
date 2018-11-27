@@ -32,6 +32,11 @@ public class DateUtilities {
         return dateFormat.format(timestamp);
     }
 
+    public static String dateToString(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        return dateFormat.format(date);
+    }
+
     public static Timestamp getTimestamp(){
         return new Timestamp(System.currentTimeMillis());
     }

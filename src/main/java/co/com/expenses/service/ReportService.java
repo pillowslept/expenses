@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.PdfReport;
+import co.com.expenses.dto.PdfInformation;
 import co.com.expenses.model.Movement;
+import co.com.expenses.util.DateUtilities;
 
 @Service
 @Transactional
@@ -22,11 +24,21 @@ public class ReportService {
 
     public ByteArrayInputStream generate() {
         List<Movement> movements = movementService.findAllByOrderByCreationDateAsc();
-        return generatePdfReport.generate(movements);
+        PdfInformation pdfInformation = buildPdfInformation(0);
+        return generatePdfReport.generate(movements, pdfInformation);
     }
 
     public ByteArrayInputStream byMonth(int month) {
         List<Movement> movements = movementService.findByCreationDateBetween(month);
-        return generatePdfReport.generate(movements);
+        PdfInformation pdfInformation = buildPdfInformation(month);
+        return generatePdfReport.generate(movements, pdfInformation);
+    }
+
+    private PdfInformation buildPdfInformation(int month) {
+        PdfInformation pdfInformation = new PdfInformation();
+        pdfInformation.setUserName("Juan Camilo Velásquez");
+        pdfInformation.setStartDate(DateUtilities.dateToString(DateUtilities.obtainBeginingOfDate(month)));
+        pdfInformation.setEndDate(DateUtilities.dateToString(DateUtilities.obtainEndOfDate(month)));
+        return pdfInformation;
     }
 }

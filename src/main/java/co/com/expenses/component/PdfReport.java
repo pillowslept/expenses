@@ -27,6 +27,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import co.com.expenses.dto.ChartSeries;
+import co.com.expenses.dto.PdfInformation;
 import co.com.expenses.dto.Summary;
 import co.com.expenses.enums.Type;
 import co.com.expenses.model.Movement;
@@ -37,6 +38,7 @@ import co.com.expenses.util.PdfUtils;
 @Component
 public class PdfReport {
 
+    private static final String DATE_MESSAGE_FILTER = "Desde: %s Hasta: %s";
     private static final String TOTAL_TITLE = "Total";
     private static final String EXPENSES_TITLE = "Egresos";
     private static final String INCOMES_TITLE = "Ingresos";
@@ -53,7 +55,7 @@ public class PdfReport {
     @Autowired
     CategoryService categoryService;
 
-    public ByteArrayInputStream generate(List<Movement> movements) {
+    public ByteArrayInputStream generate(List<Movement> movements, PdfInformation pdfInformation) {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
@@ -84,7 +86,7 @@ public class PdfReport {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            document.add(createHeader(REPORT_NAME));
+            document.add(createHeader(REPORT_NAME, pdfInformation));
             document.add(table);
             document.add(createSummary(summary));
             document.add(printCharts(movements, incomeCategories, expenseCategories));
@@ -142,12 +144,13 @@ public class PdfReport {
         return new PdfPCell(new Paragraph(name, PdfUtils.BODY_FONT));
     }
 
-    private PdfPCell getDataHeaderCell(){
+    private PdfPCell getDataHeaderCell(PdfInformation pdfInformation){
         PdfPTable table = new PdfPTable(PdfUtils.ONE_COLUMN);
 
-        table.addCell(headerCell("F. de generación: " + DateUtilities.getActualDate()));
-        table.addCell(headerCell("Nombre: " + "Juan Camilo Velásquez"));
-        table.addCell(headerCell("Fecha: " + "12/12/2018 a 12/12/2019"));
+        table.addCell(headerCell("Fecha de generación: " + DateUtilities.getActualDate()));
+        table.addCell(headerCell("Nombre: " + pdfInformation.getUserName()));
+        String dateMessage = String.format(DATE_MESSAGE_FILTER, pdfInformation.getStartDate(), pdfInformation.getEndDate());
+        table.addCell(headerCell(dateMessage));
         table.addCell(headerCell(""));
 
         PdfPCell cell = new PdfPCell(table);
@@ -156,12 +159,12 @@ public class PdfReport {
         return cell;
     }
 
-    private PdfPTable createHeader(String reportName) {
+    private PdfPTable createHeader(String reportName, PdfInformation pdfInformation) {
         PdfPTable table = PdfUtils.pdfTableFullWidth(PdfUtils.THREE_COLUMNS);
 
         table.addCell(getImageHeaderCell());
         table.addCell(getNameHeaderCell(reportName));
-        table.addCell(getDataHeaderCell());
+        table.addCell(getDataHeaderCell(pdfInformation));
         table.setSpacingAfter(PdfUtils.SPACING_BEFORE_TEN);
 
         return table;
