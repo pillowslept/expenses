@@ -34,6 +34,12 @@ public class ReportService {
         return generatePdfReport.generate(movements, pdfInformation);
     }
 
+    public ByteArrayInputStream byMonthAndYear(int month, int year) {
+        List<Movement> movements = movementService.findByCreationDateBetween(month, year);
+        PdfInformation pdfInformation = buildPdfInformation(month);
+        return generatePdfReport.generate(movements, pdfInformation);
+    }
+
     private PdfInformation buildPdfInformation(int month) {
         PdfInformation pdfInformation = new PdfInformation();
         pdfInformation.setUserName("Juan Camilo Velásquez");
@@ -41,4 +47,5 @@ public class ReportService {
         pdfInformation.setEndDate(DateUtilities.dateToString(DateUtilities.obtainEndOfDate(month)));
         return pdfInformation;
     }
+
 }

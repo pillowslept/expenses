@@ -1,9 +1,16 @@
 package co.com.expenses.util;
 
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -78,6 +85,19 @@ public class DateUtilities {
         return calendar.getTime();
     }
 
+    public static Date obtainBeginingOfDate(int month, int year) {
+        LocalDate localDate = LocalDate.of(year, month, 1);
+        LocalDate start = localDate.with(firstDayOfMonth());
+        return Date.from(start.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+    public static Date obtainEndOfDate(int month, int year) {
+        LocalDate localDate = LocalDate.of(year, month, 1);
+        LocalDate endDate = localDate.with(lastDayOfMonth());
+        LocalDateTime endDateWithTime = endDate.atTime(23, 59, 59, 999);
+        return Date.from(endDateWithTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     public static Date obtainEndOfDate(int month) {
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.set(Calendar.MONTH, month);
@@ -91,6 +111,16 @@ public class DateUtilities {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, second);
         calendar.set(Calendar.MILLISECOND, millisecond);
+    }
+
+    public static boolean isValidMonth(int mont) {
+        boolean isValid = true;
+        try {
+            Month.of(mont);
+        } catch (Exception e) {
+            isValid = false;
+        }
+        return isValid;
     }
 
 }

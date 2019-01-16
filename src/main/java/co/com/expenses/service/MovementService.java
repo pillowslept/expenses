@@ -106,4 +106,13 @@ public class MovementService {
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
     }
 
+    public List<Movement> findByCreationDateBetween(int month, int year) {
+        if(!DateUtilities.isValidMonth(month)) {
+            throw new ValidateException(NOT_A_VALID_MONTH);
+        }
+        Date startDate = DateUtilities.obtainBeginingOfDate(month, year);
+        Date endDate = DateUtilities.obtainEndOfDate(month, year);
+        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+    }
+
 }
