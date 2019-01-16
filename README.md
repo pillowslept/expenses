@@ -42,8 +42,9 @@ http://localhost:9000/Expenses/api/report/byMonth/{month} *GET*
 http://localhost:9000/Expenses/api/report/byMonthAndYear/{month}/{year} *GET*
 ```
 
-> **month** from 1 to 12
-> **year** from 0000 to 9999
+> **month** from **1** to **12**
+>
+> **year** from **0000** to **9999**
 
 ## Author
 
