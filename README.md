@@ -38,6 +38,13 @@ http://localhost:9000/Expenses/api/report/generate *GET*
 http://localhost:9000/Expenses/api/report/byMonth/{month} *GET*
 ```
 
+```
+http://localhost:9000/Expenses/api/report/byMonthAndYear/{month}/{year} *GET*
+```
+
+> **month** from 1 to 12
+> **year** from 0000 to 9999
+
 ## Author
 
 * **Juan Camilo Velásquez Vanegas** - [Juan Camilo Velásquez](https://github.com/pillowslept)
