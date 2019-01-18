@@ -1,6 +1,6 @@
 # Expenses
 
-Services to manage expenses and incomes
+API to manage expenses and incomes
 
 ## What can I do?
 
@@ -8,11 +8,11 @@ Services to manage expenses and incomes
 
 * Save a registry for every money movement
 
-* Generate a PDF report with all the movements
+* Generate a PDF report with all the movements, filtering by some fields such as Month and year
 
-* Visualize a chart with the summary of the movements
+* Visualize charts with the summary of the movements
 
-## Defined services
+## API services
 
 ```
 http://localhost:9000/Expenses/api/category/create *PUT*
