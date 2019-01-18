@@ -34,7 +34,7 @@ public class ReportController {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.generate());
     }
 
-    @RequestMapping(value = "/byMonth/{month}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(value = "/byMonth/{month:[1-9]|1[0-2]}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byMonth(@PathVariable("month") int month) {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonth(month));
     }

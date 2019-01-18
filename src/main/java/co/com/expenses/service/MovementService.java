@@ -23,7 +23,6 @@ import co.com.expenses.util.Validations;
 @Transactional
 public class MovementService {
 
-    private static final String NOT_A_VALID_MONTH = "El mes indicado para la búsqueda no es válido.";
     private static final String MOVEMENT_CREATED = "Movimiento creado con éxito, identificador generado es <%d>";
     private static final String MOVEMENT_NOT_FOUND = "El movimiento con identificador <%d> no existe en la base de datos";
     private static final String VALUE_NOT_VALID = "El campo <value> no es válido";
@@ -98,18 +97,12 @@ public class MovementService {
     }
 
     public List<Movement> findByCreationDateBetween(int month) {
-        if (DateUtilities.VALID_MONTHS.indexOf(month) == -1) {
-            throw new ValidateException(NOT_A_VALID_MONTH);
-        }
         Date startDate = DateUtilities.obtainBeginingOfDate(month);
         Date endDate = DateUtilities.obtainEndOfDate(month);
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
     }
 
     public List<Movement> findByCreationDateBetween(int month, int year) {
-        if(!DateUtilities.isValidMonth(month)) {
-            throw new ValidateException(NOT_A_VALID_MONTH);
-        }
         Date startDate = DateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = DateUtilities.obtainEndOfDate(month, year);
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
