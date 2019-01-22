@@ -32,7 +32,6 @@ import co.com.expenses.dto.Summary;
 import co.com.expenses.enums.Type;
 import co.com.expenses.model.Movement;
 import co.com.expenses.service.CategoryService;
-import co.com.expenses.util.DateUtilities;
 import co.com.expenses.util.PdfUtils;
 
 @Component
@@ -54,6 +53,9 @@ public class PdfReport {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    DateUtilities dateUtilities;
 
     public ByteArrayInputStream generate(List<Movement> movements, PdfInformation pdfInformation) {
         Document document = new Document();
@@ -77,7 +79,7 @@ public class PdfReport {
                 table.addCell(bodyCell(movement.getCategory().getDescription()));
                 table.addCell(bodyCell(formatValue(movement.getValue())));
                 table.addCell(bodyCell(movement.getObservations()));
-                table.addCell(bodyCell(DateUtilities.timestampToString(movement.getCreationDate())));
+                table.addCell(bodyCell(dateUtilities.timestampToString(movement.getCreationDate())));
 
                 recalculateSummary(summary, movement);
                 validateCategories(movement, incomeCategories, expenseCategories);
@@ -147,7 +149,7 @@ public class PdfReport {
     private PdfPCell getDataHeaderCell(PdfInformation pdfInformation){
         PdfPTable table = new PdfPTable(PdfUtils.ONE_COLUMN);
 
-        table.addCell(headerCell("Fecha de generación: " + DateUtilities.getActualDate()));
+        table.addCell(headerCell("Fecha de generación: " + dateUtilities.getActualDate()));
         table.addCell(headerCell("Nombre: " + pdfInformation.getUserName()));
         String dateMessage = String.format(DATE_MESSAGE_FILTER, pdfInformation.getStartDate(), pdfInformation.getEndDate());
         table.addCell(headerCell(dateMessage));

@@ -1,5 +1,6 @@
 package co.com.expenses.service;
 
+import java.time.Month;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import co.com.expenses.model.Category;
 import co.com.expenses.model.Movement;
 import co.com.expenses.model.Type;
 import co.com.expenses.repository.MovementRepository;
-import co.com.expenses.util.DateUtilities;
+import co.com.expenses.component.DateUtilities;
 import co.com.expenses.util.Validations;
 
 @Service
@@ -38,6 +39,9 @@ public class MovementService {
     @Autowired
     CategoryService categoryService;
 
+    @Autowired
+    DateUtilities dateUtilities;
+
     public Movement findById(Long id) {
         return movementRepository.findOne(id);
     }
@@ -51,7 +55,7 @@ public class MovementService {
                 .category(category)
                 .value(params.getValue())
                 .observations(params.getObservations())
-                .creationDate(DateUtilities.toTimestamp(params.getDate()))
+                .creationDate(dateUtilities.toTimestamp(params.getDate()))
                 .build();
         movementRepository.save(movement);
         return String.format(MOVEMENT_CREATED, movement.getId());
@@ -64,7 +68,7 @@ public class MovementService {
         if (Validations.field(params.getDate())) {
             throw new ValidateException(DATE_NOT_VALID);
         }
-        DateUtilities.validateStringInFormat(params.getDate());
+        dateUtilities.validateStringInFormat(params.getDate());
     }
 
     public Movement validateAndFind(Long id) {
@@ -97,14 +101,20 @@ public class MovementService {
     }
 
     public List<Movement> findByCreationDateBetween(int month) {
-        Date startDate = DateUtilities.obtainBeginingOfDate(month);
-        Date endDate = DateUtilities.obtainEndOfDate(month);
+        Date startDate = dateUtilities.obtainBeginingOfDate(month);
+        Date endDate = dateUtilities.obtainEndOfDate(month);
+        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+    }
+
+    public List<Movement> findByCreationDateOfYear(int year) {
+        Date startDate = dateUtilities.obtainBeginingOfDate(Month.JANUARY.getValue(), year);
+        Date endDate = dateUtilities.obtainEndOfDate(Month.DECEMBER.getValue(), year);
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
     }
 
     public List<Movement> findByCreationDateBetween(int month, int year) {
-        Date startDate = DateUtilities.obtainBeginingOfDate(month, year);
-        Date endDate = DateUtilities.obtainEndOfDate(month, year);
+        Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
+        Date endDate = dateUtilities.obtainEndOfDate(month, year);
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
     }
 
