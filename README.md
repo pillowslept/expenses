@@ -14,6 +14,8 @@ API to manage expenses and incomes
 
 ## API services
 
+The **`application.yml`** file was configured to use **`9000`** port as default.
+
 ```
 http://localhost:9000/Expenses/api/category/create *PUT*
 ```
@@ -40,6 +42,10 @@ http://localhost:9000/Expenses/api/report/byMonth/{month} *GET*
 
 ```
 http://localhost:9000/Expenses/api/report/byMonthAndYear/{month}/{year} *GET*
+```
+
+```
+http://localhost:9000/Expenses/api/report/byYear/{year} *GET*
 ```
 
 > **month** from **1** to **12**
