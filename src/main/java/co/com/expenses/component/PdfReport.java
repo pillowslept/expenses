@@ -190,10 +190,18 @@ public class PdfReport {
 
     private PdfPTable printCharts(List<Movement> movements, HashMap<Long, String> incomeCategories,
             HashMap<Long, String> expenseCategories) {
-        PdfPTable table = PdfUtils.pdfTableFullWidth(2);
 
-        table.addCell(buildChartByCategory(movements, incomeCategories, INCOMES_TITLE));
-        table.addCell(buildChartByCategory(movements, expenseCategories, EXPENSES_TITLE));
+        int columns = incomeCategories.isEmpty() || expenseCategories.isEmpty() ? PdfUtils.ONE_COLUMN
+                : PdfUtils.TWO_COLUMN;
+
+        PdfPTable table = PdfUtils.pdfTableFullWidth(columns);
+
+        if (!incomeCategories.isEmpty()) {
+            table.addCell(buildChartByCategory(movements, incomeCategories, INCOMES_TITLE));
+        }
+        if (!expenseCategories.isEmpty()) {
+            table.addCell(buildChartByCategory(movements, expenseCategories, EXPENSES_TITLE));
+        }
 
         table.setSpacingBefore(1);
 

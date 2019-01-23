@@ -6,6 +6,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
@@ -25,6 +26,7 @@ public class PdfUtils {
 
     public static final int THREE_COLUMNS = 3;
     public static final int ONE_COLUMN = 1;
+    public static final int TWO_COLUMN = 2;
     public static final int FIVE_COLUMNS = 5;
     public static final int SIX_COLUMNS = 6;
 
@@ -33,12 +35,15 @@ public class PdfUtils {
     public static final Font HEAD_FONT = FontFactory.getFont(FontFactory.HELVETICA_BOLD, FONT_SIZE_HEAD);
     public static final Font BODY_FONT = FontFactory.getFont(FontFactory.HELVETICA, FONT_SIZE_BODY);
 
+    private static final BaseColor GRAY_COLOR = new BaseColor(220, 220, 220);
+
     private PdfUtils() {
     }
 
     public static PdfPCell headCell(String name) {
         PdfPCell hcell = new PdfPCell(new Phrase(name, HEAD_FONT));
         hcell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        hcell.setBackgroundColor(GRAY_COLOR);
         return hcell;
     }
 
