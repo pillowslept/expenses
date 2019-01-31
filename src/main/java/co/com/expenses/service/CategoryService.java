@@ -37,7 +37,7 @@ public class CategoryService {
         validateCreate(params);
         Category category = Category.builder()
                 .description(params.getDescription())
-                .state(State.ACTIVE.getState())
+                .state(State.ACTIVE.get())
                 .build();
         categoryRepository.save(category);
         return String.format(CATEGORY_CREATED, category.getId());
@@ -51,14 +51,14 @@ public class CategoryService {
 
     public String inactivate(Params params) {
         Category category = validateAndFind(params.getCategoryId());
-        category.setState(State.INACTIVE.getState());
+        category.setState(State.INACTIVE.get());
         update(category);
         return String.format(CATEGORY_INACTIVATED, params.getCategoryId());
     }
 
     public String activate(Params params) {
         Category category = validateAndFind(params.getCategoryId());
-        category.setState(State.ACTIVE.getState());
+        category.setState(State.ACTIVE.get());
         update(category);
         return String.format(CATEGORY_ACTIVATED, params.getCategoryId());
     }

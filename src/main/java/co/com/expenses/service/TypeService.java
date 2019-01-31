@@ -38,7 +38,7 @@ public class TypeService {
         validateCreate(params);
         Type type = Type.builder()
                 .description(params.getDescription())
-                .state(State.ACTIVE.getState())
+                .state(State.ACTIVE.get())
                 .build();
         typeRepository.save(type);
         return String.format(TYPE_CREATED, type.getId());
@@ -60,14 +60,14 @@ public class TypeService {
 
     public String inactivate(Params params) {
         Type type = validateAndFind(params.getTypeId());
-        type.setState(State.INACTIVE.getState());
+        type.setState(State.INACTIVE.get());
         update(type);
         return String.format(TYPE_INACTIVATED, params.getTypeId());
     }
 
     public String activate(Params params) {
         Type type = validateAndFind(params.getTypeId());
-        type.setState(State.ACTIVE.getState());
+        type.setState(State.ACTIVE.get());
         update(type);
         return String.format(TYPE_ACTIVATED, params.getTypeId());
     }
@@ -92,6 +92,6 @@ public class TypeService {
     }
 
     public List<Util> findAll() {
-        return ObjectMapperUtils.mapAll(typeRepository.findByState(State.ACTIVE.getState()), Util.class);
+        return ObjectMapperUtils.mapAll(typeRepository.findByState(State.ACTIVE.get()), Util.class);
     }
 }

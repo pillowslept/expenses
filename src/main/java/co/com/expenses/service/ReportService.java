@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import co.com.expenses.component.PdfReport;
-import co.com.expenses.dto.PdfInformation;
-import co.com.expenses.model.Movement;
 import co.com.expenses.component.DateUtilities;
+import co.com.expenses.component.ExcelReport;
+import co.com.expenses.component.PdfReport;
+import co.com.expenses.dto.ReportInformation;
+import co.com.expenses.enums.ReportType;
+import co.com.expenses.model.Movement;
 
 @Service
 @Transactional
@@ -22,55 +24,69 @@ public class ReportService {
     MovementService movementService;
 
     @Autowired
-    PdfReport generatePdfReport;
+    PdfReport pdfReport;
+
+    @Autowired
+    ExcelReport excelReport;
 
     @Autowired
     DateUtilities dateUtilities;
 
-    public ByteArrayInputStream generate() {
+    public ByteArrayInputStream generate(ReportType reportType) {
         List<Movement> movements = movementService.findAllByOrderByCreationDateAsc();
-        PdfInformation pdfInformation = validatePdfInformation(0);
-        return generatePdfReport.generate(movements, pdfInformation);
+        ReportInformation reportInformation = validateInformation(0);
+        return generateReportByType(movements, reportInformation, reportType);
     }
 
-    public ByteArrayInputStream byMonth(int month) {
+    public ByteArrayInputStream byMonth(int month, ReportType reportType) {
         List<Movement> movements = movementService.findByCreationDateBetween(month);
-        PdfInformation pdfInformation = validatePdfInformation(month);
-        return generatePdfReport.generate(movements, pdfInformation);
+        ReportInformation reportInformation = validateInformation(month);
+        return generateReportByType(movements, reportInformation, reportType);
     }
 
-    public ByteArrayInputStream byYear(int year) {
+    public ByteArrayInputStream byYear(int year, ReportType reportType) {
         List<Movement> movements = movementService.findByCreationDateOfYear(year);
-        PdfInformation pdfInformation = validatePdfInformationByYear(year);
-        return generatePdfReport.generate(movements, pdfInformation);
+        ReportInformation reportInformation = validateInformationByYear(year);
+        return generateReportByType(movements, reportInformation, reportType);
     }
 
-    public ByteArrayInputStream byMonthAndYear(int month, int year) {
+    public ByteArrayInputStream byMonthAndYear(int month, int year, ReportType reportType) {
         List<Movement> movements = movementService.findByCreationDateBetween(month, year);
-        PdfInformation pdfInformation = validatePdfInformationByMonthAndYear(month, year);
-        return generatePdfReport.generate(movements, pdfInformation);
+        ReportInformation reportInformation = validateInformationByMonthAndYear(month, year);
+        return generateReportByType(movements, reportInformation, reportType);
     }
 
-    private PdfInformation validatePdfInformation(int month) {
-        return buildPdfInformation(dateUtilities.obtainBeginingOfDate(month), dateUtilities.obtainEndOfDate(month));
+    private ReportInformation validateInformation(int month) {
+        return buildReportInformation(dateUtilities.obtainBeginingOfDate(month), dateUtilities.obtainEndOfDate(month));
     }
 
-    private PdfInformation validatePdfInformationByYear(int year) {
-        return buildPdfInformation(dateUtilities.obtainBeginingOfDate(Month.JANUARY.getValue(), year),
+    private ReportInformation validateInformationByYear(int year) {
+        return buildReportInformation(dateUtilities.obtainBeginingOfDate(Month.JANUARY.getValue(), year),
                 dateUtilities.obtainEndOfDate(Month.DECEMBER.getValue(), year));
     }
 
-    private PdfInformation validatePdfInformationByMonthAndYear(int month, int year) {
-        return buildPdfInformation(dateUtilities.obtainBeginingOfDate(month, year),
+    private ReportInformation validateInformationByMonthAndYear(int month, int year) {
+        return buildReportInformation(dateUtilities.obtainBeginingOfDate(month, year),
                 dateUtilities.obtainEndOfDate(month, year));
     }
 
-    private PdfInformation buildPdfInformation(Date startDate, Date endDate) {
-        PdfInformation pdfInformation = new PdfInformation();
-        pdfInformation.setUserName("Juan Camilo Velásquez");
-        pdfInformation.setStartDate(dateUtilities.dateToString(startDate));
-        pdfInformation.setEndDate(dateUtilities.dateToString(endDate));
-        return pdfInformation;
+    private ReportInformation buildReportInformation(Date startDate, Date endDate) {
+        ReportInformation reportInformation = new ReportInformation();
+        reportInformation.setUserName("Juan Camilo Velásquez");
+        reportInformation.setStartDate(dateUtilities.dateToString(startDate));
+        reportInformation.setEndDate(dateUtilities.dateToString(endDate));
+        return reportInformation;
+    }
+
+    private ByteArrayInputStream generateReportByType(List<Movement> movements, ReportInformation reportInformation,
+            ReportType reportType) {
+        ByteArrayInputStream byteArrayInputStream = null;
+        if (reportType.equals(ReportType.EXCEL)) {
+            byteArrayInputStream = excelReport.generate(movements, reportInformation);
+        } else {
+            byteArrayInputStream = pdfReport.generate(movements, reportInformation);
+        }
+        return byteArrayInputStream;
     }
 
 }

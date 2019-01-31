@@ -1,6 +1,7 @@
 package co.com.expenses.controller;
 
 import static co.com.expenses.util.Constants.PDF_FILE_EXTENSION;
+import static co.com.expenses.util.Constants.REPORT_NAME_BY_REQUEST;
 
 import java.io.ByteArrayInputStream;
 
@@ -15,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.com.expenses.component.FileUtilities;
+import co.com.expenses.enums.ReportType;
 import co.com.expenses.service.ReportService;
 
 @RestController
 @RequestMapping("/api/report")
 public class ReportController {
-
-    private static final String REPORT_NAME_BY_REQUEST = "reporte-movimientos";
 
     @Autowired
     ReportService reportService;
@@ -31,23 +31,23 @@ public class ReportController {
 
     @RequestMapping(value = "/generate", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byRequest() {
-        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.generate());
+        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.generate(ReportType.PDF));
     }
 
     @RequestMapping(value = "/byMonth/{month:[1-9]|1[0-2]}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byMonth(@PathVariable("month") int month) {
-        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonth(month));
+        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonth(month, ReportType.PDF));
     }
 
     @RequestMapping(value = "/byYear/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byYear(@PathVariable("year") int year) {
-        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byYear(year));
+        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byYear(year, ReportType.PDF));
     }
 
     @RequestMapping(value = "/byMonthAndYear/{month:[1-9]|1[0-2]}/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byMonthAndYear(@PathVariable("month") int month,
             @PathVariable("year") int year) {
-        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonthAndYear(month, year));
+        return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonthAndYear(month, year, ReportType.PDF));
     }
 
     private ResponseEntity<InputStreamResource> buildResponse(String name,
