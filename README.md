@@ -8,7 +8,7 @@ API to manage expenses and incomes
 
 * Save a registry for every money movement
 
-* Generate PDF and XLS reports with all the movements, filtering by some fields such as Month and year
+* Generate **`PDF`** and **`XLS`** reports with all the movements, filtering by some fields such as month and year
 
 * Visualize charts with the summary of the movements
 
@@ -30,6 +30,18 @@ http://localhost:9000/Expenses/api/movement/create *PUT*
 
 ```
 http://localhost:9000/Expenses/api/movement/all *GET*
+```
+
+```
+http://localhost:9000/Expenses/api/movement/{id} *GET*
+```
+
+```
+http://localhost:9000/Expenses/api/movement/all/{pageNumber}/{pageSize} *GET*
+```
+
+```
+http://localhost:9000/Expenses/api/movement/byMonthAndYear/{month}/{year}/{pageNumber}/{pageSize} *GET*
 ```
 
 ```
