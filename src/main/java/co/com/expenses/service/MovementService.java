@@ -7,9 +7,13 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.com.expenses.component.DateUtilities;
 import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.exception.ValidateException;
@@ -17,7 +21,6 @@ import co.com.expenses.model.Category;
 import co.com.expenses.model.Movement;
 import co.com.expenses.model.Type;
 import co.com.expenses.repository.MovementRepository;
-import co.com.expenses.component.DateUtilities;
 import co.com.expenses.util.Validations;
 
 @Service
@@ -42,8 +45,10 @@ public class MovementService {
     @Autowired
     DateUtilities dateUtilities;
 
-    public Movement findById(Long id) {
-        return movementRepository.findOne(id);
+    public MovementSummary findById(Long id) {
+        java.lang.reflect.Type targetListType = new TypeToken<MovementSummary>() {}.getType();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(movementRepository.findOne(id), targetListType);
     }
 
     public String create(Params params) {
@@ -73,7 +78,7 @@ public class MovementService {
 
     public Movement validateAndFind(Long id) {
         validateId(id);
-        Movement movement = findById(id);
+        Movement movement = movementRepository.findOne(id);
         if (movement == null) {
             throw new ValidateException(String.format(MOVEMENT_NOT_FOUND, id));
         }
@@ -91,9 +96,7 @@ public class MovementService {
     }
 
     public List<MovementSummary> findAll() {
-        java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(findAllByOrderByCreationDateAsc(), targetListType);
+        return mapResults(findAllByOrderByCreationDateAsc());
     }
 
     public List<Movement> findAllByOrderByCreationDateAsc() {
@@ -116,6 +119,25 @@ public class MovementService {
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
         return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+    }
+
+    public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
+        Pageable pageable = new PageRequest(pageNumber, pageSize, org.springframework.data.domain.Sort.Direction.ASC, "creationDate");
+        Page<Movement> movements = movementRepository.findAll(pageable);
+        return mapResults(movements.getContent());
+    }
+
+    public List<MovementSummary> findByCreationDateBetweenAndPageable(int month, int year, int pageNumber, int pageSize) {
+        Pageable pageable = new PageRequest(pageNumber, pageSize);
+        Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
+        Date endDate = dateUtilities.obtainEndOfDate(month, year);
+        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
+    }
+
+    private List<MovementSummary> mapResults(List<Movement> results) {
+        java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(results, targetListType);
     }
 
 }
