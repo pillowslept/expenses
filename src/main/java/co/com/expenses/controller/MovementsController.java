@@ -16,18 +16,18 @@ import co.com.expenses.dto.Params;
 import co.com.expenses.service.MovementService;
 
 @RestController
-@RequestMapping("/api/movement")
-public class MovementController {
+@RequestMapping("/api/movements")
+public class MovementsController {
 
     @Autowired
     MovementService movementService;
 
-    @RequestMapping(value = "/create", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<String> create(@RequestBody Params params) {
         return new ResponseEntity<>(movementService.create(params), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<MovementSummary>> all() {
         return new ResponseEntity<>(movementService.findAll(), HttpStatus.OK);
     }

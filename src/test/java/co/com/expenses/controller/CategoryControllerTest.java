@@ -22,7 +22,7 @@ import co.com.expenses.service.CategoryService;
 public class CategoryControllerTest {
 
     @InjectMocks
-    CategoryController categoryController;
+    CategoriesController categoryController;
 
     @Mock
     CategoryService categoryService;

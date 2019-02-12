@@ -15,8 +15,8 @@ import co.com.expenses.dto.Util;
 import co.com.expenses.service.CategoryService;
 
 @RestController
-@RequestMapping("/api/category")
-public class CategoryController {
+@RequestMapping("/api/categories")
+public class CategoriesController {
 
     @Autowired
     CategoryService categoryService;
@@ -31,12 +31,12 @@ public class CategoryController {
         return new ResponseEntity<>(categoryService.activate(params), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<String> create(@RequestBody Params params) {
         return new ResponseEntity<>(categoryService.create(params), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Util>> findAll() {
         return new ResponseEntity<>(categoryService.findAll(), HttpStatus.OK);
     }

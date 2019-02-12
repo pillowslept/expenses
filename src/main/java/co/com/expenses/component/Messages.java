@@ -1,5 +1,7 @@
 package co.com.expenses.component;
 
+import java.util.Locale;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,4 +37,7 @@ public class Messages {
         return accessor.getMessage(code);
     }
 
+    public String get(String code, Locale locale) {
+        return accessor.getMessage(code, locale);
+    }
 }

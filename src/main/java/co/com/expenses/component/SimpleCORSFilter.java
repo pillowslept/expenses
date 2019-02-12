@@ -1,4 +1,4 @@
-package co.com.expenses.controller;
+package co.com.expenses.component;
 
 import java.io.IOException;
 import javax.servlet.Filter;

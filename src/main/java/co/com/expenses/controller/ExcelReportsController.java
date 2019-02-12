@@ -20,8 +20,8 @@ import co.com.expenses.enums.ReportType;
 import co.com.expenses.service.ReportService;
 
 @RestController
-@RequestMapping("/api/excel/report")
-public class ExcelReportController {
+@RequestMapping("/api/excel/reports")
+public class ExcelReportsController {
 
     @Autowired
     ReportService reportService;

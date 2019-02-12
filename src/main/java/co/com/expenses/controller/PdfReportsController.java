@@ -20,8 +20,8 @@ import co.com.expenses.enums.ReportType;
 import co.com.expenses.service.ReportService;
 
 @RestController
-@RequestMapping("/api/report")
-public class ReportController {
+@RequestMapping("/api/pdf/reports")
+public class PdfReportsController {
 
     @Autowired
     ReportService reportService;

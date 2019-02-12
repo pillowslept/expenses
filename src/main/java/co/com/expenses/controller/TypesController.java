@@ -15,8 +15,8 @@ import co.com.expenses.dto.Util;
 import co.com.expenses.service.TypeService;
 
 @RestController
-@RequestMapping("/api/type")
-public class TypeController {
+@RequestMapping("/api/types")
+public class TypesController {
 
     @Autowired
     TypeService typeService;
@@ -31,12 +31,12 @@ public class TypeController {
         return new ResponseEntity<>(typeService.activate(params), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<String> create(@RequestBody Params params) {
         return new ResponseEntity<>(typeService.create(params), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/find", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<List<Util>> findAll() {
         return new ResponseEntity<>(typeService.findAll(), HttpStatus.OK);
     }
