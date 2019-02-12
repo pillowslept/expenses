@@ -17,47 +17,47 @@ API to manage expenses and incomes
 The **`application.yml`** file was configured to use **`9000`** port as default.
 
 ```
-http://localhost:9000/Expenses/api/category/create *PUT*
+http://localhost:9000/Expenses/api/categories/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/type/create *PUT*
+http://localhost:9000/Expenses/api/types/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movement/create *PUT*
+http://localhost:9000/Expenses/api/movements/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movement/all *GET*
+http://localhost:9000/Expenses/api/movements/ *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movement/{id} *GET*
+http://localhost:9000/Expenses/api/movements/{id} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movement/all/{pageNumber}/{pageSize} *GET*
+http://localhost:9000/Expenses/api/movements/all/{pageNumber}/{pageSize} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movement/byMonthAndYear/{month}/{year}/{pageNumber}/{pageSize} *GET*
+http://localhost:9000/Expenses/api/movements/byMonthAndYear/{month}/{year}/{pageNumber}/{pageSize} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/report/generate *GET*
+http://localhost:9000/Expenses/api/pdf/reports/generate *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/report/byMonth/{month} *GET*
+http://localhost:9000/Expenses/api/pdf/report/byMonth/{month} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/report/byMonthAndYear/{month}/{year} *GET*
+http://localhost:9000/Expenses/api/pdf/report/byMonthAndYear/{month}/{year} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/report/byYear/{year} *GET*
+http://localhost:9000/Expenses/api/pdf/report/byYear/{year} *GET*
 ```
 
 ```
