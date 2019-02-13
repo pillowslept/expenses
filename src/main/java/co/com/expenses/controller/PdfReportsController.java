@@ -34,17 +34,17 @@ public class PdfReportsController {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.generate(ReportType.PDF));
     }
 
-    @RequestMapping(value = "/byMonth/{month:[1-9]|1[0-2]}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(value = "/month/{month:[1-9]|1[0-2]}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byMonth(@PathVariable("month") int month) {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonth(month, ReportType.PDF));
     }
 
-    @RequestMapping(value = "/byYear/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(value = "/year/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byYear(@PathVariable("year") int year) {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byYear(year, ReportType.PDF));
     }
 
-    @RequestMapping(value = "/byMonthAndYear/{month:[1-9]|1[0-2]}/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
+    @RequestMapping(value = "/month/{month:[1-9]|1[0-2]}/year/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<InputStreamResource> byMonthAndYear(@PathVariable("month") int month,
             @PathVariable("year") int year) {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonthAndYear(month, year, ReportType.PDF));

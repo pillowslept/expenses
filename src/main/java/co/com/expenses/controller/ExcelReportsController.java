@@ -29,7 +29,7 @@ public class ExcelReportsController {
     @Autowired
     FileUtilities fileUtilities;
 
-    @RequestMapping(value = "/byMonthAndYear/{month:[1-9]|1[0-2]}/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @RequestMapping(value = "/month/{month:[1-9]|1[0-2]}/year/{year:^[0-9]{4}$}", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public ResponseEntity<InputStreamResource> byMonthAndYear(@PathVariable("month") int month,
             @PathVariable("year") int year) {
         return buildResponse(REPORT_NAME_BY_REQUEST, reportService.byMonthAndYear(month, year, ReportType.EXCEL));

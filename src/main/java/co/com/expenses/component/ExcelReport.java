@@ -15,8 +15,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.ReportInformation;
-import co.com.expenses.model.Movement;
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
 
@@ -32,9 +32,9 @@ public class ExcelReport {
     @Autowired
     DateUtilities dateUtilities;
 
-    public ByteArrayInputStream generate(List<Movement> movements, ReportInformation reportInformation) {
+    public ByteArrayInputStream generate(List<MovementSummary> movementsSummary, ReportInformation reportInformation) {
         InputStream stream = readExcelAsStream(URL_EXCEL_RESOURCE);
-        ByteArrayOutputStream byteArrayOutput = replaceInformation(stream, movements, reportInformation);
+        ByteArrayOutputStream byteArrayOutput = replaceInformation(stream, movementsSummary, reportInformation);
         return convertToByteArrayInput(byteArrayOutput);
     }
 
@@ -53,21 +53,21 @@ public class ExcelReport {
         return inputStream;
     }
 
-    public ByteArrayOutputStream replaceInformation(InputStream report, List<Movement> movements,
+    public ByteArrayOutputStream replaceInformation(InputStream report, List<MovementSummary> movementsSummary,
             ReportInformation reportInformation) {
-        Map<String, Object> parameters = assignGeneralParametes(movements, reportInformation);
+        Map<String, Object> parameters = assignGeneralParametes(movementsSummary, reportInformation);
         return transformXLS(report, parameters);
     }
 
-    private Map<String, Object> assignGeneralParametes(List<Movement> movements, ReportInformation reportInformation) {
+    private Map<String, Object> assignGeneralParametes(List<MovementSummary> movementsSummary, ReportInformation reportInformation) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("generateDate", dateUtilities.getActualDate());
         parameters.put("userName", reportInformation.getUserName());
         String dateMessage = String.format(DATE_MESSAGE_FILTER, reportInformation.getStartDate(),
                 reportInformation.getEndDate());
         parameters.put("filters", dateMessage);
-        parameters.put("total", movements.size());
-        parameters.put("movements", movements);
+        parameters.put("total", movementsSummary.size());
+        parameters.put("movements", movementsSummary);
         return parameters;
     }
 

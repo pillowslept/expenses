@@ -95,30 +95,40 @@ public class MovementService {
         movementRepository.save(movement);
     }
 
-    public List<MovementSummary> findAll() {
-        return mapResults(findAllByOrderByCreationDateAsc());
+    public List<MovementSummary> findAll(Integer pageNumber, Integer pageSize) {
+        List<MovementSummary> movementsSummary;
+        if (applyPaginable(pageSize)) {
+            movementsSummary = findAllPageable(pageNumber, pageSize);
+        } else {
+            movementsSummary = findAllByOrderByCreationDateAsc();
+        }
+        return movementsSummary;
     }
 
-    public List<Movement> findAllByOrderByCreationDateAsc() {
-        return movementRepository.findAllByOrderByCreationDateAsc();
+    private boolean applyPaginable(Integer pageSize) {
+        return pageSize != null && pageSize.intValue() != 0;
     }
 
-    public List<Movement> findByCreationDateBetween(int month) {
+    public List<MovementSummary> findAllByOrderByCreationDateAsc() {
+        return mapResults(movementRepository.findAllByOrderByCreationDateAsc());
+    }
+
+    public List<MovementSummary> findByCreationDateBetween(int month) {
         Date startDate = dateUtilities.obtainBeginingOfDate(month);
         Date endDate = dateUtilities.obtainEndOfDate(month);
-        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
-    public List<Movement> findByCreationDateOfYear(int year) {
+    public List<MovementSummary> findByCreationDateOfYear(int year) {
         Date startDate = dateUtilities.obtainBeginingOfDate(Month.JANUARY.getValue(), year);
         Date endDate = dateUtilities.obtainEndOfDate(Month.DECEMBER.getValue(), year);
-        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
-    public List<Movement> findByCreationDateBetween(int month, int year) {
+    public List<MovementSummary> findByCreationDateBetween(int month, int year) {
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
-        return movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate);
+        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
     public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
@@ -127,11 +137,19 @@ public class MovementService {
         return mapResults(movements.getContent());
     }
 
-    public List<MovementSummary> findByCreationDateBetweenAndPageable(int month, int year, int pageNumber, int pageSize) {
-        Pageable pageable = new PageRequest(pageNumber, pageSize);
+    public List<MovementSummary> findByCreationDateBetween(int month, int year, Integer pageNumber, Integer pageSize) {
+        List<MovementSummary> movementsSummary;
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
-        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
+        if (applyPaginable(pageSize)) {
+            Pageable pageable = new PageRequest(pageNumber, pageSize);
+            movementsSummary = mapResults(
+                    movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
+        } else {
+            movementsSummary = mapResults(
+                    movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
+        }
+        return movementsSummary;
     }
 
     private List<MovementSummary> mapResults(List<Movement> results) {

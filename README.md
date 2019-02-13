@@ -14,7 +14,9 @@ API to manage expenses and incomes
 
 ## API services
 
-The **`application.yml`** file was configured to use **`9000`** port as default.
+The **`application.yml`** contains some basic configurations, such as port, context path, database and more.
+
+Port **`9000`** and context path **`Expenses`** are in use
 
 ```
 http://localhost:9000/Expenses/api/categories/ *PUT*
@@ -29,19 +31,15 @@ http://localhost:9000/Expenses/api/movements/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/ *GET*
-```
-
-```
 http://localhost:9000/Expenses/api/movements/{id} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/all/{pageNumber}/{pageSize} *GET*
+http://localhost:9000/Expenses/api/movements (pageNumber and pageSize optional as query) *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/byMonthAndYear/{month}/{year}/{pageNumber}/{pageSize} *GET*
+http://localhost:9000/Expenses/api/movements/month/{month}/year/{year} (pageNumber and pageSize optional as query) *GET*
 ```
 
 ```
@@ -49,19 +47,19 @@ http://localhost:9000/Expenses/api/pdf/reports/generate *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/report/byMonth/{month} *GET*
+http://localhost:9000/Expenses/api/pdf/reports/month/{month} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/report/byMonthAndYear/{month}/{year} *GET*
+http://localhost:9000/Expenses/api/pdf/reports/month/{month}/year/{year} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/report/byYear/{year} *GET*
+http://localhost:9000/Expenses/api/pdf/reports/year/{year} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/excel/report/byMonthAndYear/{month}/{year} *GET*
+http://localhost:9000/Expenses/api/excel/reports/month/{month}/year/{year} *GET*
 ```
 
 > **month** from **1** to **12**

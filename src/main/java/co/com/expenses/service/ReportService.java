@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import co.com.expenses.component.DateUtilities;
 import co.com.expenses.component.ExcelReport;
 import co.com.expenses.component.PdfReport;
+import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.ReportInformation;
 import co.com.expenses.enums.ReportType;
-import co.com.expenses.model.Movement;
 
 @Service
 @Transactional
@@ -33,25 +33,25 @@ public class ReportService {
     DateUtilities dateUtilities;
 
     public ByteArrayInputStream generate(ReportType reportType) {
-        List<Movement> movements = movementService.findAllByOrderByCreationDateAsc();
+        List<MovementSummary> movements = movementService.findAllByOrderByCreationDateAsc();
         ReportInformation reportInformation = validateInformation(0);
         return generateReportByType(movements, reportInformation, reportType);
     }
 
     public ByteArrayInputStream byMonth(int month, ReportType reportType) {
-        List<Movement> movements = movementService.findByCreationDateBetween(month);
+        List<MovementSummary> movements = movementService.findByCreationDateBetween(month);
         ReportInformation reportInformation = validateInformation(month);
         return generateReportByType(movements, reportInformation, reportType);
     }
 
     public ByteArrayInputStream byYear(int year, ReportType reportType) {
-        List<Movement> movements = movementService.findByCreationDateOfYear(year);
+        List<MovementSummary> movements = movementService.findByCreationDateOfYear(year);
         ReportInformation reportInformation = validateInformationByYear(year);
         return generateReportByType(movements, reportInformation, reportType);
     }
 
     public ByteArrayInputStream byMonthAndYear(int month, int year, ReportType reportType) {
-        List<Movement> movements = movementService.findByCreationDateBetween(month, year);
+        List<MovementSummary> movements = movementService.findByCreationDateBetween(month, year);
         ReportInformation reportInformation = validateInformationByMonthAndYear(month, year);
         return generateReportByType(movements, reportInformation, reportType);
     }
@@ -78,13 +78,13 @@ public class ReportService {
         return reportInformation;
     }
 
-    private ByteArrayInputStream generateReportByType(List<Movement> movements, ReportInformation reportInformation,
+    private ByteArrayInputStream generateReportByType(List<MovementSummary> movementsSummary, ReportInformation reportInformation,
             ReportType reportType) {
         ByteArrayInputStream byteArrayInputStream = null;
         if (reportType.equals(ReportType.EXCEL)) {
-            byteArrayInputStream = excelReport.generate(movements, reportInformation);
+            byteArrayInputStream = excelReport.generate(movementsSummary, reportInformation);
         } else {
-            byteArrayInputStream = pdfReport.generate(movements, reportInformation);
+            byteArrayInputStream = pdfReport.generate(movementsSummary, reportInformation);
         }
         return byteArrayInputStream;
     }
