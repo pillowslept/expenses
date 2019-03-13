@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.DateUtilities;
 import co.com.expenses.component.ExcelReport;
+import co.com.expenses.component.Messages;
 import co.com.expenses.component.PdfReport;
 import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.ReportInformation;
@@ -31,6 +32,9 @@ public class ReportService {
 
     @Autowired
     DateUtilities dateUtilities;
+
+    @Autowired
+    Messages messages;
 
     public ByteArrayInputStream generate(ReportType reportType) {
         List<MovementSummary> movements = movementService.findAllByOrderByCreationDateAsc();
@@ -72,7 +76,7 @@ public class ReportService {
 
     private ReportInformation buildReportInformation(Date startDate, Date endDate) {
         ReportInformation reportInformation = new ReportInformation();
-        reportInformation.setUserName("Juan Camilo Velásquez");
+        reportInformation.setUserName(messages.get("default.username"));
         reportInformation.setStartDate(dateUtilities.dateToString(startDate));
         reportInformation.setEndDate(dateUtilities.dateToString(endDate));
         return reportInformation;

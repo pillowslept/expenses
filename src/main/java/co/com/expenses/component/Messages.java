@@ -30,7 +30,6 @@ public class Messages {
     @PostConstruct
     private void init() {
         accessor = new MessageSourceAccessor(messageSource);
-        System.out.println(get("fileservice.upload"));
     }
 
     public String get(String code) {
