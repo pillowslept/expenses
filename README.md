@@ -19,47 +19,47 @@ The **`application.yml`** contains some basic configurations, such as port, cont
 Port **`9000`** and context path **`Expenses`** are in use
 
 ```
-http://localhost:9000/Expenses/api/categories/ *PUT*
+{host}/api/categories/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/types/ *PUT*
+{host}/api/types/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/ *PUT*
+{host}/api/movements/ *PUT*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/{id} *GET*
+{host}/api/movements/{id} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements (pageNumber and pageSize optional as query) *GET*
+{host}/api/movements (pageNumber and pageSize optional as query) *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/movements/month/{month}/year/{year} (pageNumber and pageSize optional as query) *GET*
+{host}/api/movements/month/{month}/year/{year} (pageNumber and pageSize optional as query) *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/reports/generate *GET*
+{host}/api/pdf/reports/generate *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/reports/month/{month} *GET*
+{host}/api/pdf/reports/month/{month} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/reports/month/{month}/year/{year} *GET*
+{host}/api/pdf/reports/month/{month}/year/{year} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/pdf/reports/year/{year} *GET*
+{host}/api/pdf/reports/year/{year} *GET*
 ```
 
 ```
-http://localhost:9000/Expenses/api/excel/reports/month/{month}/year/{year} *GET*
+{host}/api/excel/reports/month/{month}/year/{year} *GET*
 ```
 
 > **month** from **1** to **12**
