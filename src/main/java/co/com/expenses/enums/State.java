@@ -2,7 +2,7 @@ package co.com.expenses.enums;
 
 public enum State {
 
-    ACTIVE("Activo"), INACTIVE("Inactivo");
+    ACTIVE("ACTIVE"), INACTIVE("INACTIVE");
 
     private String state;
 

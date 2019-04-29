@@ -2,15 +2,16 @@ package co.com.expenses.dto;
 
 import java.io.Serializable;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class Util implements Serializable {
+@Builder
+public class SuccessResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long id;
-    private String description;
-    private String state;
+    private Object data;
+    private String message;
 
 }
