@@ -3,7 +3,6 @@ package co.com.expenses.controller;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +14,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
 import co.com.expenses.dto.Params;
-import co.com.expenses.dto.Util;
+import co.com.expenses.dto.SuccessResponse;
 import co.com.expenses.service.CategoryService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -37,11 +36,11 @@ public class CategoryControllerTest {
                 .thenReturn(messageToReturn);
 
         // act
-        ResponseEntity<String> message = categoryController.inactivate(params);
+        ResponseEntity<SuccessResponse> successResponse = categoryController.inactivate(params);
 
         // assert
-        Assert.assertEquals(OK, message.getStatusCode());
-        Assert.assertEquals(message.getBody(), messageToReturn);
+        Assert.assertEquals(OK, successResponse.getStatusCode());
+        Assert.assertEquals(successResponse.getBody().getData(), messageToReturn);
     }
 
     @Test
@@ -54,11 +53,11 @@ public class CategoryControllerTest {
                 .thenReturn(messageToReturn);
 
         // act
-        ResponseEntity<String> message = categoryController.activate(params);
+        ResponseEntity<SuccessResponse> successResponse = categoryController.activate(params);
 
         // assert
-        Assert.assertEquals(OK, message.getStatusCode());
-        Assert.assertEquals(message.getBody(), messageToReturn);
+        Assert.assertEquals(OK, successResponse.getStatusCode());
+        Assert.assertEquals(successResponse.getBody().getData(), messageToReturn);
     }
 
     @Test
@@ -71,11 +70,11 @@ public class CategoryControllerTest {
                 .thenReturn(messageToShow);
 
         // act
-        ResponseEntity<String> message = categoryController.create(params);
+        ResponseEntity<SuccessResponse> successResponse = categoryController.create(params);
 
         // assert
-        Assert.assertEquals(OK, message.getStatusCode());
-        Assert.assertEquals(message.getBody(), messageToShow);
+        Assert.assertEquals(OK, successResponse.getStatusCode());
+        Assert.assertEquals(successResponse.getBody().getData(), messageToShow);
     }
 
     @Test
@@ -86,9 +85,9 @@ public class CategoryControllerTest {
         Mockito.when(categoryService.findAll()).thenReturn(new ArrayList<>());
 
         // act
-        ResponseEntity<List<Util>> list = categoryController.findAll();
+        ResponseEntity<SuccessResponse> successResponse = categoryController.findAll();
 
         // assert
-        Assert.assertEquals(OK, list.getStatusCode());
+        Assert.assertEquals(OK, successResponse.getStatusCode());
     }
 }
