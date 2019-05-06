@@ -43,7 +43,6 @@ public class PdfReport {
     private static final String INCOMES_TITLE = "Ingresos";
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
-
     private static final String LOGO = "/images/expenses.jpg";
 
     private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());

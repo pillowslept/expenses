@@ -39,4 +39,5 @@ public class Messages {
     public String get(String code, Locale locale) {
         return accessor.getMessage(code, locale);
     }
+
 }

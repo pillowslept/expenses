@@ -21,26 +21,26 @@ public class CategoriesController {
 
     @RequestMapping(value = "/inactivate", method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> inactivate(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(categoryService.inactivate(params)), HttpStatus.OK);
+        return buildResponse(categoryService.inactivate(params));
     }
 
     @RequestMapping(value = "/activate", method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> activate(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(categoryService.activate(params)), HttpStatus.OK);
+        return buildResponse(categoryService.activate(params));
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> create(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(categoryService.create(params)), HttpStatus.OK);
+        return buildResponse(categoryService.create(params));
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> findAll() {
-        return new ResponseEntity<>(buildResponse(categoryService.findAll()), HttpStatus.OK);
+        return buildResponse(categoryService.findAll());
     }
 
-    private SuccessResponse buildResponse(Object data) {
-        return SuccessResponse.builder().data(data).build();
+    private ResponseEntity<SuccessResponse> buildResponse(Object data) {
+        return new ResponseEntity<>(SuccessResponse.builder().data(data).build(), HttpStatus.OK);
     }
 
 }

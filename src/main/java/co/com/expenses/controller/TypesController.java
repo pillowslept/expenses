@@ -21,25 +21,26 @@ public class TypesController {
 
     @RequestMapping(value = "/inactivate", method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> inactivate(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(typeService.inactivate(params)), HttpStatus.OK);
+        return buildResponse(typeService.inactivate(params));
     }
 
     @RequestMapping(value = "/activate", method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> activate(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(typeService.activate(params)), HttpStatus.OK);
+        return buildResponse(typeService.activate(params));
     }
 
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> create(@RequestBody Params params) {
-        return new ResponseEntity<>(buildResponse(typeService.create(params)), HttpStatus.OK);
+        return buildResponse(typeService.create(params));
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> findAll() {
-        return new ResponseEntity<>(buildResponse(typeService.findAll()), HttpStatus.OK);
+        return buildResponse(typeService.findAll());
     }
 
-    private SuccessResponse buildResponse(Object data) {
-        return SuccessResponse.builder().data(data).build();
+    private ResponseEntity<SuccessResponse> buildResponse(Object data) {
+        return new ResponseEntity<>(SuccessResponse.builder().data(data).build(), HttpStatus.OK);
     }
+
 }
