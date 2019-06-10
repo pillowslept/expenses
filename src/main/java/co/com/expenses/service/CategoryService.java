@@ -42,7 +42,7 @@ public class CategoryService {
 
     private void validateCreate(Params params) {
         if(Validations.field(params.getDescription())){
-            throw new ValidateException(String.format(messages.get("category.field.required"), "description"));
+            throw new ValidateException(String.format(messages.get("default.field.required"), "description"));
         }
     }
 
@@ -71,7 +71,7 @@ public class CategoryService {
 
     private void validateId(Long id) {
         if(Validations.field(id)){
-            throw new ValidateException(String.format(messages.get("category.field.required"), "categoryId"));
+            throw new ValidateException(String.format(messages.get("default.field.required"), "categoryId"));
         }
     }
 

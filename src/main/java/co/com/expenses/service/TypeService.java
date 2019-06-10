@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
 import co.com.expenses.dto.Util;
 import co.com.expenses.enums.State;
@@ -19,16 +20,11 @@ import co.com.expenses.util.Validations;
 @Transactional
 public class TypeService {
 
-    private static final String TYPE_CREATED = "El tipo de movimiento ha sido creado con éxito, el identificador generado es <%d>";
-    private static final String TYPE_NOT_FOUND = "El tipo de movimiento con identificador <%d> no existe en la base de datos";
-    private static final String TYPE_ACTIVATED = "El tipo de movimiento con identificador <%d> fue activado con éxito";
-    private static final String TYPE_INACTIVATED = "El tipo de movimiento con identificador <%d> fue inactivado con éxito";
-    private static final String DESCRIPTION_NOT_VALID = "El campo <description> no es válido";
-    private static final String TYPE_ID_NOT_VALID = "El campo <typeId> no es válido";
-    private static final String TYPE_EXISTS = "El tipo de movimiento con descripción <%s> ya existe en la base de datos";
-
     @Autowired
     TypeRepository typeRepository;
+
+    @Autowired
+    Messages messages;
 
     public Type findById(Long id) {
         return typeRepository.findOne(id);
@@ -41,19 +37,19 @@ public class TypeService {
                 .state(State.ACTIVE.get())
                 .build();
         typeRepository.save(type);
-        return String.format(TYPE_CREATED, type.getId());
+        return String.format(messages.get("type.created"), type.getId());
     }
 
     private void validateExistence(String description) {
         Type type = typeRepository.findByDescriptionIgnoreCase(description);
         if(type != null) {
-            throw new ValidateException(String.format(TYPE_EXISTS, description));
+            throw new ValidateException(String.format(messages.get("type.exists"), description));
         }
     }
 
     private void validateCreate(Params params) {
         if(Validations.field(params.getDescription())){
-            throw new ValidateException(DESCRIPTION_NOT_VALID);
+            throw new ValidateException(String.format(messages.get("default.field.required"), "description"));
         }
         validateExistence(params.getDescription());
     }
@@ -62,28 +58,28 @@ public class TypeService {
         Type type = validateAndFind(params.getTypeId());
         type.setState(State.INACTIVE.get());
         update(type);
-        return String.format(TYPE_INACTIVATED, params.getTypeId());
+        return String.format(messages.get("type.inactivated"), params.getTypeId());
     }
 
     public String activate(Params params) {
         Type type = validateAndFind(params.getTypeId());
         type.setState(State.ACTIVE.get());
         update(type);
-        return String.format(TYPE_ACTIVATED, params.getTypeId());
+        return String.format(messages.get("type.inactivated"), params.getTypeId());
     }
 
     public Type validateAndFind(Long id) {
         validateId(id);
         Type type = findById(id);
         if(type == null){
-            throw new ValidateException(String.format(TYPE_NOT_FOUND, id));
+            throw new ValidateException(String.format(messages.get("type.not.found"), id));
         }
         return type;
     }
 
     private void validateId(Long id) {
         if(Validations.field(id)){
-            throw new ValidateException(TYPE_ID_NOT_VALID);
+            throw new ValidateException(String.format(messages.get("default.field.required"), "typeId"));
         }
     }
 
