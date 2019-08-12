@@ -1,5 +1,7 @@
 package co.com.expenses.service;
 
+import static co.com.expenses.util.Constants.DEFAULT_FIELD_VALIDATION;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,7 @@ public class TypeService {
 
     private void validateCreate(Params params) {
         if(Validations.field(params.getDescription())){
-            throw new ValidateException(String.format(messages.get("default.field.required"), "description"));
+            throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "description"));
         }
         validateExistence(params.getDescription());
     }
@@ -79,7 +81,7 @@ public class TypeService {
 
     private void validateId(Long id) {
         if(Validations.field(id)){
-            throw new ValidateException(String.format(messages.get("default.field.required"), "typeId"));
+            throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "typeId"));
         }
     }
 

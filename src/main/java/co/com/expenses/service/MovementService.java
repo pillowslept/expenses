@@ -1,5 +1,8 @@
 package co.com.expenses.service;
 
+import static co.com.expenses.util.Constants.DEFAULT_FIELD_VALIDATION;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.DateUtilities;
+import co.com.expenses.component.Messages;
 import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.exception.ValidateException;
@@ -27,12 +31,6 @@ import co.com.expenses.util.Validations;
 @Transactional
 public class MovementService {
 
-    private static final String MOVEMENT_CREATED = "Movimiento creado con éxito, identificador generado es <%d>";
-    private static final String MOVEMENT_NOT_FOUND = "El movimiento con identificador <%d> no existe en la base de datos";
-    private static final String VALUE_NOT_VALID = "El campo <value> no es válido";
-    private static final String DATE_NOT_VALID = "El campo <date> no es válido";
-    private static final String MOVEMENT_ID_NOT_VALID = "El campo <movementId> no es válido";
-
     @Autowired
     MovementRepository movementRepository;
 
@@ -44,6 +42,9 @@ public class MovementService {
 
     @Autowired
     DateUtilities dateUtilities;
+
+    @Autowired
+    Messages messages;
 
     public MovementSummary findById(Long id) {
         java.lang.reflect.Type targetListType = new TypeToken<MovementSummary>() {}.getType();
@@ -63,15 +64,15 @@ public class MovementService {
                 .creationDate(dateUtilities.toTimestamp(params.getDate()))
                 .build();
         movementRepository.save(movement);
-        return String.format(MOVEMENT_CREATED, movement.getId());
+        return String.format(messages.get("movement.created"), movement.getId());
     }
 
     private void validateCreate(Params params) {
         if (Validations.field(params.getValue())) {
-            throw new ValidateException(VALUE_NOT_VALID);
+            throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "value"));
         }
         if (Validations.field(params.getDate())) {
-            throw new ValidateException(DATE_NOT_VALID);
+            throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "date"));
         }
         dateUtilities.validateStringInFormat(params.getDate());
     }
@@ -80,14 +81,14 @@ public class MovementService {
         validateId(id);
         Movement movement = movementRepository.findOne(id);
         if (movement == null) {
-            throw new ValidateException(String.format(MOVEMENT_NOT_FOUND, id));
+            throw new ValidateException(String.format(messages.get("movement.not.found"), id));
         }
         return movement;
     }
 
     private void validateId(Long id) {
         if (Validations.field(id)) {
-            throw new ValidateException(MOVEMENT_ID_NOT_VALID);
+            throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "movementId"));
         }
     }
 
@@ -132,7 +133,7 @@ public class MovementService {
     }
 
     public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
-        Pageable pageable = new PageRequest(pageNumber, pageSize, org.springframework.data.domain.Sort.Direction.ASC, "creationDate");
+        Pageable pageable = new PageRequest(pageNumber, pageSize, ASC, "creationDate");
         Page<Movement> movements = movementRepository.findAll(pageable);
         return mapResults(movements.getContent());
     }
