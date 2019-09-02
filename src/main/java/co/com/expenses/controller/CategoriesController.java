@@ -3,6 +3,7 @@ package co.com.expenses.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,19 +20,29 @@ public class CategoriesController {
     @Autowired
     CategoryService categoryService;
 
-    @RequestMapping(value = "/inactivate", method = RequestMethod.POST)
-    public ResponseEntity<SuccessResponse> inactivate(@RequestBody Params params) {
-        return buildResponse(categoryService.inactivate(params));
+    @RequestMapping(value = "/{id}/inactivate", method = RequestMethod.PUT)
+    public ResponseEntity<SuccessResponse> inactivate(@PathVariable("id") Long id) {
+        return buildResponse(categoryService.inactivate(id));
     }
 
-    @RequestMapping(value = "/activate", method = RequestMethod.POST)
-    public ResponseEntity<SuccessResponse> activate(@RequestBody Params params) {
-        return buildResponse(categoryService.activate(params));
+    @RequestMapping(value = "/{id}/activate", method = RequestMethod.PUT)
+    public ResponseEntity<SuccessResponse> activate(@PathVariable("id") Long id) {
+        return buildResponse(categoryService.activate(id));
     }
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> create(@RequestBody Params params) {
         return buildResponse(categoryService.create(params));
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<SuccessResponse> update(@PathVariable("id") Long id, @RequestBody Params params) {
+        return buildResponse(categoryService.update(id, params));
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
+        return buildResponse(categoryService.findById(id));
     }
 
     @RequestMapping(method = RequestMethod.GET)

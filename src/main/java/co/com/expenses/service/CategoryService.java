@@ -33,7 +33,7 @@ public class CategoryService {
     }
 
     public String create(Params params) {
-        validateCreate(params);
+        validateFields(params);
         Category category = Category.builder()
                 .description(params.getDescription())
                 .state(State.ACTIVE.get())
@@ -42,24 +42,32 @@ public class CategoryService {
         return String.format(messages.get("category.created"), category.getId());
     }
 
-    private void validateCreate(Params params) {
+    public String update(Long id, Params params) {
+        validateFields(params);
+        Category category = validateAndFind(id);
+        category.setDescription(params.getDescription());
+        update(category);
+        return String.format(messages.get("category.updated"), category.getId());
+    }
+
+    private void validateFields(Params params) {
         if(Validations.field(params.getDescription())){
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "description"));
         }
     }
 
-    public String inactivate(Params params) {
-        Category category = validateAndFind(params.getCategoryId());
+    public String inactivate(Long id) {
+        Category category = validateAndFind(id);
         category.setState(State.INACTIVE.get());
         update(category);
-        return String.format(messages.get("category.inactivated"), params.getCategoryId());
+        return String.format(messages.get("category.inactivated"), id);
     }
 
-    public String activate(Params params) {
-        Category category = validateAndFind(params.getCategoryId());
+    public String activate(Long id) {
+        Category category = validateAndFind(id);
         category.setState(State.ACTIVE.get());
         update(category);
-        return String.format(messages.get("category.activated"), params.getCategoryId());
+        return String.format(messages.get("category.activated"), id);
     }
 
     public Category validateAndFind(Long id) {
@@ -77,7 +85,7 @@ public class CategoryService {
         }
     }
 
-    public void update(Category category) {
+    private void update(Category category) {
         categoryRepository.save(category);
     }
 

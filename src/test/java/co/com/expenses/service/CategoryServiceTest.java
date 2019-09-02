@@ -1,6 +1,7 @@
 package co.com.expenses.service;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
@@ -21,6 +23,14 @@ public class CategoryServiceTest {
 
     @Mock
     CategoryRepository categoryRepository;
+
+    @Mock
+    Messages messages;
+
+    @Before
+    public void init() {
+        Mockito.when(messages.get(Mockito.anyString())).thenReturn("");
+    }
 
     @Test
     public void findByIdTest() {
@@ -92,24 +102,26 @@ public class CategoryServiceTest {
     @Test
     public void updateTest() throws ValidateException {
         // arrange
-        Category category = Category.builder().build();
+        Long id = 1L;
+        Params params = new Params();
+        params.setDescription("Ropa");
+        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
 
         // act
-        categoryService.update(category);
+        String messsage = categoryService.update(id, params);
 
         // assert
-        Assert.assertNotNull(category);
+        Assert.assertNotNull(messsage);
     }
 
     @Test
     public void inactivateTest() throws ValidateException {
         // arrange
-        Params params = new Params();
-        params.setCategoryId(1L);
+        Long id = 1L;
         Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
 
         // act
-        String message = categoryService.inactivate(params);
+        String message = categoryService.inactivate(id);
 
         // assert
         Assert.assertNotNull(message);
@@ -118,14 +130,14 @@ public class CategoryServiceTest {
     @Test
     public void activateTest() throws ValidateException {
         // arrange
-        Params params = new Params();
-        params.setCategoryId(1L);
+        Long id = 1L;
         Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
 
         // act
-        String message = categoryService.activate(params);
+        String message = categoryService.activate(id);
 
         // assert
         Assert.assertNotNull(message);
     }
+
 }

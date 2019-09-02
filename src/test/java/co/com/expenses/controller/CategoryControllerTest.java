@@ -29,14 +29,13 @@ public class CategoryControllerTest {
     @Test
     public void inactivateTest() {
         // arrange
-        Params params = new Params();
-        params.setCategoryId(1L);
-        String messageToReturn = "Categoría creada " + params.getCategoryId();
-        Mockito.when(categoryService.inactivate(Mockito.any(Params.class)))
+        Long id = 1L;
+        String messageToReturn = "Categoría creada " + id;
+        Mockito.when(categoryService.inactivate(Mockito.any(Long.class)))
                 .thenReturn(messageToReturn);
 
         // act
-        ResponseEntity<SuccessResponse> successResponse = categoryController.inactivate(params);
+        ResponseEntity<SuccessResponse> successResponse = categoryController.inactivate(id);
 
         // assert
         Assert.assertEquals(OK, successResponse.getStatusCode());
@@ -46,14 +45,13 @@ public class CategoryControllerTest {
     @Test
     public void activateTest() {
         // arrange
-        Params params = new Params();
-        params.setCategoryId(1L);
-        String messageToReturn = "Categoría activada " + params.getCategoryId();
-        Mockito.when(categoryService.activate(Mockito.any(Params.class)))
+        Long id = 1L;
+        String messageToReturn = "Categoría activada " + id;
+        Mockito.when(categoryService.activate(Mockito.any(Long.class)))
                 .thenReturn(messageToReturn);
 
         // act
-        ResponseEntity<SuccessResponse> successResponse = categoryController.activate(params);
+        ResponseEntity<SuccessResponse> successResponse = categoryController.activate(id);
 
         // assert
         Assert.assertEquals(OK, successResponse.getStatusCode());
