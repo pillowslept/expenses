@@ -20,12 +20,12 @@ public class CategoriesController {
     @Autowired
     CategoryService categoryService;
 
-    @RequestMapping(value = "/{id}/inactivate", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id:[0-9]+}/inactivate", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> inactivate(@PathVariable("id") Long id) {
         return buildResponse(categoryService.inactivate(id));
     }
 
-    @RequestMapping(value = "/{id}/activate", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id:[0-9]+}/activate", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> activate(@PathVariable("id") Long id) {
         return buildResponse(categoryService.activate(id));
     }
@@ -35,12 +35,12 @@ public class CategoriesController {
         return buildResponse(categoryService.create(params));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.PUT)
     public ResponseEntity<SuccessResponse> update(@PathVariable("id") Long id, @RequestBody Params params) {
         return buildResponse(categoryService.update(id, params));
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
         return buildResponse(categoryService.findById(id));
     }

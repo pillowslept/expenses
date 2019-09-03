@@ -21,15 +21,15 @@ public class MovementsController {
     @Autowired
     MovementService movementService;
 
-    @RequestMapping(method = RequestMethod.PUT)
+    @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> create(@RequestBody Params params) {
         return new ResponseEntity<>(SuccessResponse.builder().message(movementService.create(params)).build(),
                 HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
-        return buildResponse(movementService.findById(id));
+        return buildResponse(movementService.findByIdMapped(id));
     }
 
     @RequestMapping(method = RequestMethod.GET)

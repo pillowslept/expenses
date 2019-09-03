@@ -6,6 +6,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -46,10 +47,19 @@ public class MovementService {
     @Autowired
     Messages messages;
 
-    public MovementSummary findById(Long id) {
+    public Movement findById(Long id) {
+        Optional<Movement> movement = movementRepository.findById(id);
+        if (!movement.isPresent()) {
+            throw new ValidateException(String.format(messages.get("movement.not.found"), id));
+        }
+        return movement.get();
+    }
+
+    public MovementSummary findByIdMapped(Long id) {
+        Movement movement = findById(id);
         java.lang.reflect.Type targetListType = new TypeToken<MovementSummary>() {}.getType();
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(movementRepository.findOne(id), targetListType);
+        return modelMapper.map(movement, targetListType);
     }
 
     public String create(Params params) {
@@ -79,11 +89,7 @@ public class MovementService {
 
     public Movement validateAndFind(Long id) {
         validateId(id);
-        Movement movement = movementRepository.findOne(id);
-        if (movement == null) {
-            throw new ValidateException(String.format(messages.get("movement.not.found"), id));
-        }
-        return movement;
+        return findById(id);
     }
 
     private void validateId(Long id) {
@@ -92,7 +98,8 @@ public class MovementService {
         }
     }
 
-    public void update(Movement movement) {
+    public void update(Long id, Params params) {
+        Movement movement = validateAndFind(id);
         movementRepository.save(movement);
     }
 
@@ -133,7 +140,7 @@ public class MovementService {
     }
 
     public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
-        Pageable pageable = new PageRequest(pageNumber, pageSize, ASC, "creationDate");
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, ASC, "creationDate");
         Page<Movement> movements = movementRepository.findAll(pageable);
         return mapResults(movements.getContent());
     }
@@ -143,7 +150,7 @@ public class MovementService {
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
         if (applyPaginable(pageSize)) {
-            Pageable pageable = new PageRequest(pageNumber, pageSize);
+            Pageable pageable = PageRequest.of(pageNumber, pageSize);
             movementsSummary = mapResults(
                     movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
         } else {

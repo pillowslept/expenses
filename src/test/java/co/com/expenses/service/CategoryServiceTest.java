@@ -1,5 +1,7 @@
 package co.com.expenses.service;
 
+import java.util.Optional;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
@@ -36,7 +38,7 @@ public class CategoryServiceTest {
     public void findByIdTest() {
         // arrange
         Long id = 1L;
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
         Category category = categoryService.findById(id);
@@ -71,7 +73,7 @@ public class CategoryServiceTest {
     public void validateAndFindTest() {
         // arrange
         Long id = 1L;
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
         Category category = categoryService.validateAndFind(id);
@@ -93,7 +95,7 @@ public class CategoryServiceTest {
     public void validateAndFindNotFoundTest() throws ValidateException {
         // arrange
         Long investigatorId = 1L;
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(null);
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.empty());
 
         // act
         categoryService.validateAndFind(investigatorId);
@@ -105,7 +107,7 @@ public class CategoryServiceTest {
         Long id = 1L;
         Params params = new Params();
         params.setDescription("Ropa");
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
         String messsage = categoryService.update(id, params);
@@ -118,7 +120,7 @@ public class CategoryServiceTest {
     public void inactivateTest() throws ValidateException {
         // arrange
         Long id = 1L;
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
         String message = categoryService.inactivate(id);
@@ -131,7 +133,7 @@ public class CategoryServiceTest {
     public void activateTest() throws ValidateException {
         // arrange
         Long id = 1L;
-        Mockito.when(categoryRepository.findOne(Mockito.anyLong())).thenReturn(Category.builder().build());
+        Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
         String message = categoryService.activate(id);

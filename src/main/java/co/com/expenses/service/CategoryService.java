@@ -3,6 +3,7 @@ package co.com.expenses.service;
 import static co.com.expenses.util.Constants.DEFAULT_FIELD_VALIDATION;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,11 @@ public class CategoryService {
     Messages messages;
 
     public Category findById(Long id) {
-        return categoryRepository.findOne(id);
+        Optional<Category> category = categoryRepository.findById(id);
+        if (!category.isPresent()) {
+            throw new ValidateException(String.format(messages.get("category.not.found"), id));
+        }
+        return category.get();
     }
 
     public String create(Params params) {
@@ -72,11 +77,7 @@ public class CategoryService {
 
     public Category validateAndFind(Long id) {
         validateId(id);
-        Category category = findById(id);
-        if(category == null){
-            throw new ValidateException(String.format(messages.get("category.not.found"), id));
-        }
-        return category;
+        return findById(id);
     }
 
     private void validateId(Long id) {

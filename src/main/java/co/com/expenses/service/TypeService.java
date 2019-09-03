@@ -3,6 +3,7 @@ package co.com.expenses.service;
 import static co.com.expenses.util.Constants.DEFAULT_FIELD_VALIDATION;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,11 @@ public class TypeService {
     Messages messages;
 
     public Type findById(Long id) {
-        return typeRepository.findOne(id);
+        Optional<Type> type = typeRepository.findById(id);
+        if (!type.isPresent()) {
+            throw new ValidateException(String.format(messages.get("type.not.found"), id));
+        }
+        return type.get();
     }
 
     public String create(Params params) {
@@ -56,27 +61,23 @@ public class TypeService {
         validateExistence(params.getDescription());
     }
 
-    public String inactivate(Params params) {
-        Type type = validateAndFind(params.getTypeId());
+    public String inactivate(Long id) {
+        Type type = validateAndFind(id);
         type.setState(State.INACTIVE.get());
         update(type);
-        return String.format(messages.get("type.inactivated"), params.getTypeId());
+        return String.format(messages.get("type.inactivated"), id);
     }
 
-    public String activate(Params params) {
-        Type type = validateAndFind(params.getTypeId());
+    public String activate(Long id) {
+        Type type = validateAndFind(id);
         type.setState(State.ACTIVE.get());
         update(type);
-        return String.format(messages.get("type.inactivated"), params.getTypeId());
+        return String.format(messages.get("type.inactivated"), id);
     }
 
     public Type validateAndFind(Long id) {
         validateId(id);
-        Type type = findById(id);
-        if(type == null){
-            throw new ValidateException(String.format(messages.get("type.not.found"), id));
-        }
-        return type;
+        return findById(id);
     }
 
     private void validateId(Long id) {
