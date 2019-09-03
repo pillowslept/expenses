@@ -13,7 +13,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import co.com.expenses.exception.ValidateException;
@@ -24,7 +25,7 @@ public class DateUtilities {
     private static final int FIRST_DAY_OF_MONTH = 1;
     private static final String DATE_FORMAT_NOT_VALID = "La fecha <%s> no se encuentra en el formato <%s>";
     private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
-    private static final Logger LOGGER = Logger.getLogger(DateUtilities.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(DateUtilities.class.getName());
 
     public String timestampToString(Timestamp timestamp) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);

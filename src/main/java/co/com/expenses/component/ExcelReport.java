@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ import net.sf.jxls.transformer.XLSTransformer;
 @Component
 public class ExcelReport {
 
-    private static final Logger LOGGER = Logger.getLogger(ExcelReport.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(ExcelReport.class.getName());
     private static final String ERROR_GENERATING_EXCEL = "Error generando excel";
     private static final String ERROR_READING_EXCEL = "Ocurrió un error intentando leer el archivo de excel";
     private static final String URL_EXCEL_RESOURCE = "/report/report.xls";

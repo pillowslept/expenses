@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +46,7 @@ public class PdfReport {
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
     private static final String LOGO = "/images/expenses.jpg";
 
-    private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(PdfReport.class.getName());
 
     @Autowired
     Charts charts;

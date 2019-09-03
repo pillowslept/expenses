@@ -5,7 +5,8 @@ import static java.awt.Color.WHITE;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.PieChart;
@@ -21,7 +22,7 @@ public class Charts {
     private static final int WIDTH = 265;
 
     private static final String ERROR_OBTAINING_BYTES = "Ocurrió un error obteniendo los bytes para la gráfica";
-    private static final Logger LOGGER = Logger.getLogger(PdfReport.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(PdfReport.class.getName());
 
     public PieChart pie(List<ChartSeries> listChartSeries, String title) {
 
