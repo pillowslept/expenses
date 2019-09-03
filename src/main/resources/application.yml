@@ -1,6 +1,7 @@
 server:
   port: 9000
-  contextPath: /Expenses
+  servlet:
+    context-path: /Expenses
 ---
 spring:
   profiles: local, default
@@ -49,7 +50,7 @@ datasource:
     url: jdbc:mysql://localhost:3306/expenses
     username: root
     password: 
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     defaultSchema:
     maxPoolSize: 20
     hibernate:
