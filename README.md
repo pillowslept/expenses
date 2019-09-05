@@ -18,17 +18,51 @@ The **`application.yml`** contains some basic configurations, such as port, cont
 
 Port **`9000`** and context path **`Expenses`** are in use
 
+### Categories
+
 ```
-{host}/api/categories/ *PUT*
+{host}/api/categories/ *GET*
 ```
 
 ```
-{host}/api/types/ *PUT*
+{host}/api/categories/{id} *GET*
 ```
 
 ```
-{host}/api/movements/ *PUT*
+{host}/api/categories/ *POST*
 ```
+
+```
+{host}/api/categories/{id} *PUT*
+```
+
+```
+{host}/api/categories/{id}/activate *PUT*
+```
+
+```
+{host}/api/categories/{id}/inactivate *PUT*
+```
+
+### Types
+
+```
+{host}/api/types/ *GET*
+```
+
+```
+{host}/api/types/ *POST*
+```
+
+```
+{host}/api/types/{id}/activate *PUT*
+```
+
+```
+{host}/api/types/{id}/inactivate *PUT*
+```
+
+### Movements
 
 ```
 {host}/api/movements/{id} *GET*
@@ -43,6 +77,12 @@ Port **`9000`** and context path **`Expenses`** are in use
 ```
 
 ```
+{host}/api/movements/ *POST*
+```
+
+### PDF reports
+
+```
 {host}/api/pdf/reports/generate *GET*
 ```
 
@@ -51,12 +91,14 @@ Port **`9000`** and context path **`Expenses`** are in use
 ```
 
 ```
-{host}/api/pdf/reports/month/{month}/year/{year} *GET*
+{host}/api/pdf/reports/year/{year} *GET*
 ```
 
 ```
-{host}/api/pdf/reports/year/{year} *GET*
+{host}/api/pdf/reports/month/{month}/year/{year} *GET*
 ```
+
+### XLS reports
 
 ```
 {host}/api/excel/reports/month/{month}/year/{year} *GET*
