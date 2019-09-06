@@ -1,5 +1,6 @@
 package co.com.expenses.component;
 
+import static co.com.expenses.util.Constants.LOGO;
 import static co.com.expenses.util.CurrencyUtilities.formatValue;
 import static co.com.expenses.util.PdfUtils.bodyCell;
 import static co.com.expenses.util.PdfUtils.headCell;
@@ -44,7 +45,6 @@ public class PdfReport {
     private static final String INCOMES_TITLE = "Ingresos";
     private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
-    private static final String LOGO = "/images/expenses.jpg";
 
     private static final Logger LOGGER = LogManager.getLogger(PdfReport.class.getName());
 
@@ -232,4 +232,5 @@ public class PdfReport {
                 BigDecimal::add);
         return charts.buildSerie(category.getValue(), totalByCategory);
     }
+
 }

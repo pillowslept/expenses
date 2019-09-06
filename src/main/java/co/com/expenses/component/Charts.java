@@ -51,4 +51,5 @@ public class Charts {
     public ChartSeries buildSerie(String name, Number value) {
         return ChartSeries.builder().value(value).name(name).build();
     }
+
 }

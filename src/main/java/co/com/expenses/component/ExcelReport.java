@@ -1,5 +1,7 @@
 package co.com.expenses.component;
 
+import static co.com.expenses.util.Constants.EXCEL_RESOURCE;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -27,14 +29,13 @@ public class ExcelReport {
     private static final Logger LOGGER = LogManager.getLogger(ExcelReport.class.getName());
     private static final String ERROR_GENERATING_EXCEL = "Error generando excel";
     private static final String ERROR_READING_EXCEL = "Ocurrió un error intentando leer el archivo de excel";
-    private static final String URL_EXCEL_RESOURCE = "/report/report.xls";
     private static final String DATE_MESSAGE_FILTER = "Desde: %s Hasta: %s";
 
     @Autowired
     DateUtilities dateUtilities;
 
     public ByteArrayInputStream generate(List<MovementSummary> movementsSummary, ReportInformation reportInformation) {
-        InputStream stream = readExcelAsStream(URL_EXCEL_RESOURCE);
+        InputStream stream = readExcelAsStream(EXCEL_RESOURCE);
         ByteArrayOutputStream byteArrayOutput = replaceInformation(stream, movementsSummary, reportInformation);
         return convertToByteArrayInput(byteArrayOutput);
     }
