@@ -12,5 +12,7 @@ public class Util implements Serializable {
     private Long id;
     private String description;
     private String state;
+    private String createdAt;
+    private String updatedAt;
 
 }
