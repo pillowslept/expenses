@@ -56,6 +56,7 @@ public class DateUtilities {
             LOGGER.info(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT), e);
             throw new ValidateException(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT));
         }
+
         return new Timestamp(date.getTime());
     }
 

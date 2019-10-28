@@ -47,23 +47,28 @@ public class MovementService {
     @Autowired
     Messages messages;
 
-    public Movement findById(Long id) {
+    private Movement findById(Long id) {
         Optional<Movement> movement = movementRepository.findById(id);
         if (!movement.isPresent()) {
             throw new ValidateException(String.format(messages.get("movement.not.found"), id));
         }
+
         return movement.get();
     }
 
     public MovementSummary findByIdMapped(Long id) {
-        Movement movement = findById(id);
+        return this.mapMovement(this.findById(id));
+    }
+
+    private MovementSummary mapMovement(Movement movement) {
         java.lang.reflect.Type targetListType = new TypeToken<MovementSummary>() {}.getType();
         ModelMapper modelMapper = new ModelMapper();
+
         return modelMapper.map(movement, targetListType);
     }
 
-    public String create(Params params) {
-        validateCreate(params);
+    public MovementSummary create(Params params) {
+        this.validateCreate(params);
         Type type = typeService.validateAndFind(params.getTypeId());
         Category category = categoryService.validateAndFind(params.getCategoryId());
         Movement movement = Movement.builder()
@@ -74,7 +79,8 @@ public class MovementService {
                 .creationDate(dateUtilities.toTimestamp(params.getDate()))
                 .build();
         movementRepository.save(movement);
-        return String.format(messages.get("movement.created"), movement.getId());
+
+        return this.mapMovement(movement);
     }
 
     private void validateCreate(Params params) {
@@ -88,28 +94,39 @@ public class MovementService {
     }
 
     public Movement validateAndFind(Long id) {
-        validateId(id);
-        return findById(id);
-    }
-
-    private void validateId(Long id) {
         if (Validations.field(id)) {
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "movementId"));
         }
+
+        return this.findById(id);
     }
 
-    public void update(Long id, Params params) {
-        Movement movement = validateAndFind(id);
+    public MovementSummary update(Long id, Params params) {
+        Movement movement = this.validateAndFind(id);
+        this.validateCreate(params);
+        Type type = typeService.validateAndFind(params.getTypeId());
+        Category category = categoryService.validateAndFind(params.getCategoryId());
+
+        movement.setType(type);
+        movement.setCategory(category);
+        movement.setValue(params.getValue());
+        movement.setObservations(params.getObservations());
+        movement.setCreationDate(dateUtilities.toTimestamp(params.getDate()));
+        System.out.println(movement.getCreationDate());
         movementRepository.save(movement);
+        System.out.println(movement.getCreationDate());
+
+        return this.mapMovement(movement);
     }
 
     public List<MovementSummary> findAll(Integer pageNumber, Integer pageSize) {
         List<MovementSummary> movementsSummary;
-        if (applyPaginable(pageSize)) {
-            movementsSummary = findAllPageable(pageNumber, pageSize);
+        if (this.applyPaginable(pageSize)) {
+            movementsSummary = this.findAllPageable(pageNumber, pageSize);
         } else {
-            movementsSummary = findAllByOrderByCreationDateAsc();
+            movementsSummary = this.findAllByOrderByCreationDateAsc();
         }
+
         return movementsSummary;
     }
 
@@ -118,51 +135,57 @@ public class MovementService {
     }
 
     public List<MovementSummary> findAllByOrderByCreationDateAsc() {
-        return mapResults(movementRepository.findAllByOrderByCreationDateAsc());
+        return this.mapResults(movementRepository.findAllByOrderByCreationDateAsc());
     }
 
     public List<MovementSummary> findByCreationDateBetween(int month) {
         Date startDate = dateUtilities.obtainBeginingOfDate(month);
         Date endDate = dateUtilities.obtainEndOfDate(month);
+
         return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
     public List<MovementSummary> findByCreationDateOfYear(int year) {
         Date startDate = dateUtilities.obtainBeginingOfDate(Month.JANUARY.getValue(), year);
         Date endDate = dateUtilities.obtainEndOfDate(Month.DECEMBER.getValue(), year);
-        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
+
+        return this.mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
     public List<MovementSummary> findByCreationDateBetween(int month, int year) {
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
-        return mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
+
+        return this.mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
     }
 
     public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, ASC, "creationDate");
         Page<Movement> movements = movementRepository.findAll(pageable);
-        return mapResults(movements.getContent());
+
+        return this.mapResults(movements.getContent());
     }
 
     public List<MovementSummary> findByCreationDateBetween(int month, int year, Integer pageNumber, Integer pageSize) {
         List<MovementSummary> movementsSummary;
         Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
-        if (applyPaginable(pageSize)) {
+        if (this.applyPaginable(pageSize)) {
             Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            movementsSummary = mapResults(
+            movementsSummary = this.mapResults(
                     movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
         } else {
-            movementsSummary = mapResults(
+            movementsSummary = this.mapResults(
                     movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
         }
+
         return movementsSummary;
     }
 
     private List<MovementSummary> mapResults(List<Movement> results) {
         java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
         ModelMapper modelMapper = new ModelMapper();
+
         return modelMapper.map(results, targetListType);
     }
 

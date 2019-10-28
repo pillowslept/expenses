@@ -23,27 +23,31 @@ public class MovementsController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<SuccessResponse> create(@RequestBody Params params) {
-        return new ResponseEntity<>(SuccessResponse.builder().message(movementService.create(params)).build(),
-                HttpStatus.OK);
+        return this.buildResponse(movementService.create(params));
+    }
+
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.PUT)
+    public ResponseEntity<SuccessResponse> update(@PathVariable("id") Long id, @RequestBody Params params) {
+        return this.buildResponse(movementService.update(id, params));
     }
 
     @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
-        return buildResponse(movementService.findByIdMapped(id));
+        return this.buildResponse(movementService.findByIdMapped(id));
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> findAllPageable(
             @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize) {
-        return buildResponse(movementService.findAll(pageNumber, pageSize));
+        return this.buildResponse(movementService.findAll(pageNumber, pageSize));
     }
 
     @RequestMapping(value = "/month/{month:[1-9]|1[0-2]}/year/{year:^[0-9]{4}$}", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byMonthAndYear(@PathVariable("month") int month,
             @PathVariable("year") int year, @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(name = "pageSize", required = false) Integer pageSize) {
-        return buildResponse(movementService.findByCreationDateBetween(month, year, pageNumber, pageSize));
+        return this.buildResponse(movementService.findByCreationDateBetween(month, year, pageNumber, pageSize));
     }
 
     private ResponseEntity<SuccessResponse> buildResponse(Object data) {
