@@ -112,9 +112,7 @@ public class MovementService {
         movement.setValue(params.getValue());
         movement.setObservations(params.getObservations());
         movement.setCreationDate(dateUtilities.toTimestamp(params.getDate()));
-        System.out.println(movement.getCreationDate());
         movementRepository.save(movement);
-        System.out.println(movement.getCreationDate());
 
         return this.mapMovement(movement);
     }
