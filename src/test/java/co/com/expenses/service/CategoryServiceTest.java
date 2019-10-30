@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
+import co.com.expenses.dto.Util;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
 import co.com.expenses.repository.CategoryRepository;
@@ -54,10 +55,10 @@ public class CategoryServiceTest {
         params.setDescription("Ropa");
 
         // act
-        String message = categoryService.create(params);
+        Util util = categoryService.create(params);
 
         // assert
-        Assert.assertNotNull(message);
+        Assert.assertNotNull(util);
     }
 
     @Test(expected = ValidateException.class)
@@ -110,10 +111,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        String messsage = categoryService.update(id, params);
+        Util util = categoryService.update(id, params);
 
         // assert
-        Assert.assertNotNull(messsage);
+        Assert.assertNotNull(util);
     }
 
     @Test
@@ -123,10 +124,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        String message = categoryService.inactivate(id);
+        Util util = categoryService.inactivate(id);
 
         // assert
-        Assert.assertNotNull(message);
+        Assert.assertNotNull(util);
     }
 
     @Test
@@ -136,10 +137,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        String message = categoryService.activate(id);
+        Util util = categoryService.activate(id);
 
         // assert
-        Assert.assertNotNull(message);
+        Assert.assertNotNull(util);
     }
 
 }

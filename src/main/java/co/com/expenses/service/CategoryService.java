@@ -34,25 +34,28 @@ public class CategoryService {
         if (!category.isPresent()) {
             throw new ValidateException(String.format(messages.get("category.not.found"), id));
         }
+
         return category.get();
     }
 
-    public String create(Params params) {
-        validateFields(params);
+    public Util create(Params params) {
+        this.validateFields(params);
         Category category = Category.builder()
                 .description(params.getDescription())
                 .state(State.ACTIVE.get())
                 .build();
         categoryRepository.save(category);
-        return String.format(messages.get("category.created"), category.getId());
+
+        return ObjectMapperUtils.map(category, Util.class);
     }
 
-    public String update(Long id, Params params) {
-        validateFields(params);
+    public Util update(Long id, Params params) {
+        this.validateFields(params);
         Category category = validateAndFind(id);
         category.setDescription(params.getDescription());
-        update(category);
-        return String.format(messages.get("category.updated"), category.getId());
+        this.update(category);
+
+        return ObjectMapperUtils.map(category, Util.class);
     }
 
     private void validateFields(Params params) {
@@ -61,29 +64,28 @@ public class CategoryService {
         }
     }
 
-    public String inactivate(Long id) {
-        Category category = validateAndFind(id);
+    public Util inactivate(Long id) {
+        Category category = this.validateAndFind(id);
         category.setState(State.INACTIVE.get());
-        update(category);
-        return String.format(messages.get("category.inactivated"), id);
+        this.update(category);
+
+        return ObjectMapperUtils.map(category, Util.class);
     }
 
-    public String activate(Long id) {
-        Category category = validateAndFind(id);
+    public Util activate(Long id) {
+        Category category = this.validateAndFind(id);
         category.setState(State.ACTIVE.get());
-        update(category);
-        return String.format(messages.get("category.activated"), id);
+        this.update(category);
+
+        return ObjectMapperUtils.map(category, Util.class);
     }
 
     public Category validateAndFind(Long id) {
-        validateId(id);
-        return findById(id);
-    }
-
-    private void validateId(Long id) {
         if(Validations.field(id)){
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "categoryId"));
         }
+
+        return this.findById(id);
     }
 
     private void update(Category category) {
