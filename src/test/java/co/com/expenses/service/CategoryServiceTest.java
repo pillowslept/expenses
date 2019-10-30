@@ -12,8 +12,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import co.com.expenses.component.Messages;
+import co.com.expenses.dto.CategorySummary;
 import co.com.expenses.dto.Params;
-import co.com.expenses.dto.Util;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
 import co.com.expenses.repository.CategoryRepository;
@@ -55,10 +55,10 @@ public class CategoryServiceTest {
         params.setDescription("Ropa");
 
         // act
-        Util util = categoryService.create(params);
+        CategorySummary categorySummary = categoryService.create(params);
 
         // assert
-        Assert.assertNotNull(util);
+        Assert.assertNotNull(categorySummary);
     }
 
     @Test(expected = ValidateException.class)
@@ -111,10 +111,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        Util util = categoryService.update(id, params);
+        CategorySummary categorySummary = categoryService.update(id, params);
 
         // assert
-        Assert.assertNotNull(util);
+        Assert.assertNotNull(categorySummary);
     }
 
     @Test
@@ -124,10 +124,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        Util util = categoryService.inactivate(id);
+        CategorySummary categorySummary = categoryService.inactivate(id);
 
         // assert
-        Assert.assertNotNull(util);
+        Assert.assertNotNull(categorySummary);
     }
 
     @Test
@@ -137,10 +137,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        Util util = categoryService.activate(id);
+        CategorySummary categorySummary = categoryService.activate(id);
 
         // assert
-        Assert.assertNotNull(util);
+        Assert.assertNotNull(categorySummary);
     }
 
 }

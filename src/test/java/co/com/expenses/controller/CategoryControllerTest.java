@@ -13,9 +13,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.ResponseEntity;
 
+import co.com.expenses.dto.CategorySummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.dto.SuccessResponse;
-import co.com.expenses.dto.Util;
 import co.com.expenses.service.CategoryService;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -31,34 +31,34 @@ public class CategoryControllerTest {
     public void inactivateTest() {
         // arrange
         Long id = 1L;
-        Util util = new Util();
-        util.setDescription("Test");
+        CategorySummary categorySummary = new CategorySummary();
+        categorySummary.setDescription("Test");
         Mockito.when(categoryService.inactivate(Mockito.any(Long.class)))
-                .thenReturn(util);
+                .thenReturn(categorySummary);
 
         // act
         ResponseEntity<SuccessResponse> successResponse = categoryController.inactivate(id);
 
         // assert
         Assert.assertEquals(OK, successResponse.getStatusCode());
-        Assert.assertEquals(successResponse.getBody().getData(), util);
+        Assert.assertEquals(successResponse.getBody().getData(), categorySummary);
     }
 
     @Test
     public void activateTest() {
         // arrange
         Long id = 1L;
-        Util util = new Util();
-        util.setDescription("Test");
+        CategorySummary categorySummary = new CategorySummary();
+        categorySummary.setDescription("Test");
         Mockito.when(categoryService.activate(Mockito.any(Long.class)))
-                .thenReturn(util);
+                .thenReturn(categorySummary);
 
         // act
         ResponseEntity<SuccessResponse> successResponse = categoryController.activate(id);
 
         // assert
         Assert.assertEquals(OK, successResponse.getStatusCode());
-        Assert.assertEquals(successResponse.getBody().getData(), util);
+        Assert.assertEquals(successResponse.getBody().getData(), categorySummary);
     }
 
     @Test
@@ -66,17 +66,17 @@ public class CategoryControllerTest {
         // arrange
         Params params = new Params();
         params.setDescription("Ropa");
-        Util util = new Util();
-        util.setDescription("Test");
+        CategorySummary categorySummary = new CategorySummary();
+        categorySummary.setDescription("Test");
         Mockito.when(categoryService.create(Mockito.any(Params.class)))
-                .thenReturn(util);
+                .thenReturn(categorySummary);
 
         // act
         ResponseEntity<SuccessResponse> successResponse = categoryController.create(params);
 
         // assert
         Assert.assertEquals(OK, successResponse.getStatusCode());
-        Assert.assertEquals(successResponse.getBody().getData(), util);
+        Assert.assertEquals(successResponse.getBody().getData(), categorySummary);
     }
 
     @Test

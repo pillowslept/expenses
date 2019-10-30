@@ -15,9 +15,7 @@ public class MovementSummary implements Serializable {
     private Timestamp creationDate;
     private BigDecimal value;
     private String observations;
-    private Long typeId;
-    private String typeDescription;
-    private Long categoryId;
-    private String categoryDescription;
+    private CategorySummary category;
+    private TypeSummary type;
 
 }

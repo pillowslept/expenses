@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +24,7 @@ import co.com.expenses.model.Category;
 import co.com.expenses.model.Movement;
 import co.com.expenses.model.Type;
 import co.com.expenses.repository.MovementRepository;
+import co.com.expenses.util.ObjectMapperUtils;
 import co.com.expenses.util.Validations;
 
 @Service
@@ -61,10 +60,7 @@ public class MovementService {
     }
 
     private MovementSummary mapMovement(Movement movement) {
-        java.lang.reflect.Type targetListType = new TypeToken<MovementSummary>() {}.getType();
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(movement, targetListType);
+        return ObjectMapperUtils.map(movement, MovementSummary.class);
     }
 
     public MovementSummary create(Params params) {
@@ -181,10 +177,7 @@ public class MovementService {
     }
 
     private List<MovementSummary> mapResults(List<Movement> results) {
-        java.lang.reflect.Type targetListType = new TypeToken<List<MovementSummary>>() {}.getType();
-        ModelMapper modelMapper = new ModelMapper();
-
-        return modelMapper.map(results, targetListType);
+        return ObjectMapperUtils.mapAll(results, MovementSummary.class);
     }
 
 }

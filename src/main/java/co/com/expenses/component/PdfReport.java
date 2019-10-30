@@ -75,8 +75,8 @@ public class PdfReport {
             HashMap<Long, String> expenseCategories = new HashMap<>();
 
             for (MovementSummary movementSummary : movementsSummary) {
-                table.addCell(bodyCell(movementSummary.getTypeDescription()));
-                table.addCell(bodyCell(movementSummary.getCategoryDescription()));
+                table.addCell(bodyCell(movementSummary.getType().getDescription()));
+                table.addCell(bodyCell(movementSummary.getCategory().getDescription()));
                 table.addCell(bodyCell(formatValue(movementSummary.getValue())));
                 table.addCell(bodyCell(movementSummary.getObservations()));
                 table.addCell(bodyCell(dateUtilities.timestampToString(movementSummary.getCreationDate())));
@@ -101,11 +101,11 @@ public class PdfReport {
 
     private void validateCategories(MovementSummary movementSummary, HashMap<Long, String> incomeCategories,
             HashMap<Long, String> expenseCategories) {
-        Long typeId = movementSummary.getTypeId();
+        Long typeId = movementSummary.getType().getId();
         if (Type.INCOME.get().equals(typeId)) {
-            incomeCategories.put(movementSummary.getCategoryId(), movementSummary.getCategoryDescription());
+            incomeCategories.put(movementSummary.getCategory().getId(), movementSummary.getCategory().getDescription());
         } else if (Type.EXPENSE.get().equals(typeId)) {
-            expenseCategories.put(movementSummary.getCategoryId(), movementSummary.getCategoryDescription());
+            expenseCategories.put(movementSummary.getCategory().getId(), movementSummary.getCategory().getDescription());
         }
     }
 
@@ -118,7 +118,7 @@ public class PdfReport {
     }
 
     private void recalculateSummary(Summary summary, MovementSummary movementSummary) {
-        if(movementSummary.getTypeId().equals(Type.INCOME.get())) {
+        if(movementSummary.getType().getId().equals(Type.INCOME.get())) {
             summary.setIncomes(summary.getIncomes().add(movementSummary.getValue()));
             summary.setTotal(summary.getTotal().add(movementSummary.getValue()));
         }else {
@@ -226,7 +226,7 @@ public class PdfReport {
 
     private ChartSeries calculateTotalByCategory(List<MovementSummary> movementsSummary, Map.Entry<Long, String> category) {
         List<MovementSummary> movementsByCategory = movementsSummary.stream()
-                .filter(m -> m.getCategoryId().intValue() == category.getKey().intValue())
+                .filter(m -> m.getCategory().getId().intValue() == category.getKey().intValue())
                 .collect(Collectors.toList());
         BigDecimal totalByCategory = movementsByCategory.stream().map(MovementSummary::getValue).reduce(BigDecimal.ZERO,
                 BigDecimal::add);

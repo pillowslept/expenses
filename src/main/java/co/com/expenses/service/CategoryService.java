@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.Messages;
+import co.com.expenses.dto.CategorySummary;
 import co.com.expenses.dto.Params;
-import co.com.expenses.dto.Util;
 import co.com.expenses.enums.State;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
@@ -38,7 +38,7 @@ public class CategoryService {
         return category.get();
     }
 
-    public Util create(Params params) {
+    public CategorySummary create(Params params) {
         this.validateFields(params);
         Category category = Category.builder()
                 .description(params.getDescription())
@@ -46,16 +46,16 @@ public class CategoryService {
                 .build();
         categoryRepository.save(category);
 
-        return ObjectMapperUtils.map(category, Util.class);
+        return ObjectMapperUtils.map(category, CategorySummary.class);
     }
 
-    public Util update(Long id, Params params) {
+    public CategorySummary update(Long id, Params params) {
         this.validateFields(params);
         Category category = validateAndFind(id);
         category.setDescription(params.getDescription());
         this.update(category);
 
-        return ObjectMapperUtils.map(category, Util.class);
+        return ObjectMapperUtils.map(category, CategorySummary.class);
     }
 
     private void validateFields(Params params) {
@@ -64,20 +64,20 @@ public class CategoryService {
         }
     }
 
-    public Util inactivate(Long id) {
+    public CategorySummary inactivate(Long id) {
         Category category = this.validateAndFind(id);
         category.setState(State.INACTIVE.get());
         this.update(category);
 
-        return ObjectMapperUtils.map(category, Util.class);
+        return ObjectMapperUtils.map(category, CategorySummary.class);
     }
 
-    public Util activate(Long id) {
+    public CategorySummary activate(Long id) {
         Category category = this.validateAndFind(id);
         category.setState(State.ACTIVE.get());
         this.update(category);
 
-        return ObjectMapperUtils.map(category, Util.class);
+        return ObjectMapperUtils.map(category, CategorySummary.class);
     }
 
     public Category validateAndFind(Long id) {
@@ -92,8 +92,8 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public List<Util> findAll() {
-        return ObjectMapperUtils.mapAll(categoryRepository.findAll(), Util.class);
+    public List<CategorySummary> findAll() {
+        return ObjectMapperUtils.mapAll(categoryRepository.findAll(), CategorySummary.class);
     }
 
 }

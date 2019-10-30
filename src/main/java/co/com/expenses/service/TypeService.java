@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
-import co.com.expenses.dto.Util;
+import co.com.expenses.dto.TypeSummary;
 import co.com.expenses.enums.State;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Type;
@@ -90,7 +90,7 @@ public class TypeService {
         typeRepository.save(type);
     }
 
-    public List<Util> findAll() {
-        return ObjectMapperUtils.mapAll(typeRepository.findByState(State.ACTIVE.get()), Util.class);
+    public List<TypeSummary> findAll() {
+        return ObjectMapperUtils.mapAll(typeRepository.findByState(State.ACTIVE.get()), TypeSummary.class);
     }
 }
