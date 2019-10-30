@@ -42,7 +42,7 @@ public class CategoriesController {
 
     @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
-        return buildResponse(categoryService.findById(id));
+        return buildResponse(categoryService.findByIdMapped(id));
     }
 
     @RequestMapping(method = RequestMethod.GET)

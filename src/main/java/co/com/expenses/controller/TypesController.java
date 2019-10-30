@@ -35,6 +35,11 @@ public class TypesController {
         return buildResponse(typeService.create(params));
     }
 
+    @RequestMapping(value = "/{id:[0-9]+}", method = RequestMethod.GET)
+    public ResponseEntity<SuccessResponse> byId(@PathVariable("id") Long id) {
+        return buildResponse(typeService.findByIdMapped(id));
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> findAll() {
         return buildResponse(typeService.findAll());

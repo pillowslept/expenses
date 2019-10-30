@@ -42,10 +42,10 @@ public class CategoryServiceTest {
         Mockito.when(categoryRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(Category.builder().build()));
 
         // act
-        Category category = categoryService.findById(id);
+        CategorySummary categorySummary = categoryService.findByIdMapped(id);
 
         // assert
-        Assert.assertNotNull(category);
+        Assert.assertNotNull(categorySummary);
     }
 
     @Test

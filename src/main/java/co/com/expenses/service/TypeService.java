@@ -29,7 +29,7 @@ public class TypeService {
     @Autowired
     Messages messages;
 
-    public Type findById(Long id) {
+    private Type findById(Long id) {
         Optional<Type> type = typeRepository.findById(id);
         if (!type.isPresent()) {
             throw new ValidateException(String.format(messages.get("type.not.found"), id));
@@ -37,14 +37,19 @@ public class TypeService {
         return type.get();
     }
 
-    public String create(Params params) {
-        validateCreate(params);
+    public TypeSummary findByIdMapped(Long id) {
+        return ObjectMapperUtils.map(this.findById(id), TypeSummary.class);
+    }
+
+    public TypeSummary create(Params params) {
+        this.validateCreate(params);
         Type type = Type.builder()
                 .description(params.getDescription())
                 .state(State.ACTIVE.get())
                 .build();
         typeRepository.save(type);
-        return String.format(messages.get("type.created"), type.getId());
+
+        return ObjectMapperUtils.map(type, TypeSummary.class);
     }
 
     private void validateExistence(String description) {
@@ -58,39 +63,39 @@ public class TypeService {
         if(Validations.field(params.getDescription())){
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "description"));
         }
-        validateExistence(params.getDescription());
+        this.validateExistence(params.getDescription());
     }
 
-    public String inactivate(Long id) {
-        Type type = validateAndFind(id);
+    public TypeSummary inactivate(Long id) {
+        Type type = this.validateAndFind(id);
         type.setState(State.INACTIVE.get());
-        update(type);
-        return String.format(messages.get("type.inactivated"), id);
+        this.update(type);
+
+        return ObjectMapperUtils.map(type, TypeSummary.class);
     }
 
-    public String activate(Long id) {
-        Type type = validateAndFind(id);
+    public TypeSummary activate(Long id) {
+        Type type = this.validateAndFind(id);
         type.setState(State.ACTIVE.get());
-        update(type);
-        return String.format(messages.get("type.inactivated"), id);
+        this.update(type);
+
+        return ObjectMapperUtils.map(type, TypeSummary.class);
     }
 
     public Type validateAndFind(Long id) {
-        validateId(id);
-        return findById(id);
-    }
-
-    private void validateId(Long id) {
         if(Validations.field(id)){
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "typeId"));
         }
+
+        return this.findById(id);
     }
 
-    public void update(Type type) {
+    private void update(Type type) {
         typeRepository.save(type);
     }
 
     public List<TypeSummary> findAll() {
         return ObjectMapperUtils.mapAll(typeRepository.findByState(State.ACTIVE.get()), TypeSummary.class);
     }
+
 }

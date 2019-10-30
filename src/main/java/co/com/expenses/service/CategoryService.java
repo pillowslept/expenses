@@ -29,13 +29,17 @@ public class CategoryService {
     @Autowired
     Messages messages;
 
-    public Category findById(Long id) {
+    private Category findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (!category.isPresent()) {
             throw new ValidateException(String.format(messages.get("category.not.found"), id));
         }
 
         return category.get();
+    }
+
+    public CategorySummary findByIdMapped(Long id) {
+        return ObjectMapperUtils.map(this.findById(id), CategorySummary.class);
     }
 
     public CategorySummary create(Params params) {
