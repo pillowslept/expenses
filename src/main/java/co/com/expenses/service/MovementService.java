@@ -19,6 +19,7 @@ import co.com.expenses.component.DateUtilities;
 import co.com.expenses.component.Messages;
 import co.com.expenses.dto.MovementSummary;
 import co.com.expenses.dto.Params;
+import co.com.expenses.exception.NotFoundException;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
 import co.com.expenses.model.Movement;
@@ -49,7 +50,7 @@ public class MovementService {
     private Movement findById(Long id) {
         Optional<Movement> movement = movementRepository.findById(id);
         if (!movement.isPresent()) {
-            throw new ValidateException(String.format(messages.get("movement.not.found"), id));
+            throw new NotFoundException(String.format(messages.get("movement.not.found"), id));
         }
 
         return movement.get();

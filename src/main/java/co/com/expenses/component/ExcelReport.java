@@ -27,12 +27,13 @@ import net.sf.jxls.transformer.XLSTransformer;
 public class ExcelReport {
 
     private static final Logger LOGGER = LogManager.getLogger(ExcelReport.class.getName());
-    private static final String ERROR_GENERATING_EXCEL = "Error generando excel";
-    private static final String ERROR_READING_EXCEL = "Ocurrió un error intentando leer el archivo de excel";
     private static final String DATE_MESSAGE_FILTER = "Desde: %s Hasta: %s";
 
     @Autowired
     DateUtilities dateUtilities;
+
+    @Autowired
+    Messages messages;
 
     public ByteArrayInputStream generate(List<MovementSummary> movementsSummary, ReportInformation reportInformation) {
         InputStream stream = readExcelAsStream(EXCEL_RESOURCE);
@@ -50,7 +51,7 @@ public class ExcelReport {
         try {
             inputStream = reportUrl.openStream();
         } catch (IOException e) {
-            LOGGER.error(ERROR_READING_EXCEL, e);
+            LOGGER.error(messages.get("excel.error.reading"), e);
         }
         return inputStream;
     }
@@ -82,7 +83,7 @@ public class ExcelReport {
             workbook.write(byteArrayOutputStream);
             byteArrayOutputStream.close();
         } catch (IOException | ParsePropertyException | InvalidFormatException e) {
-            LOGGER.error(ERROR_GENERATING_EXCEL, e);
+            LOGGER.error(messages.get("excel.error.generating"), e);
         }
         return byteArrayOutputStream;
     }

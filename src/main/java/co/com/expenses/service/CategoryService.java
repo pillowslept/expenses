@@ -13,6 +13,7 @@ import co.com.expenses.component.Messages;
 import co.com.expenses.dto.CategorySummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.enums.State;
+import co.com.expenses.exception.NotFoundException;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Category;
 import co.com.expenses.repository.CategoryRepository;
@@ -32,7 +33,7 @@ public class CategoryService {
     private Category findById(Long id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (!category.isPresent()) {
-            throw new ValidateException(String.format(messages.get("category.not.found"), id));
+            throw new NotFoundException(String.format(messages.get("category.not.found"), id));
         }
 
         return category.get();

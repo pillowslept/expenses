@@ -13,6 +13,7 @@ import co.com.expenses.component.Messages;
 import co.com.expenses.dto.Params;
 import co.com.expenses.dto.TypeSummary;
 import co.com.expenses.enums.State;
+import co.com.expenses.exception.NotFoundException;
 import co.com.expenses.exception.ValidateException;
 import co.com.expenses.model.Type;
 import co.com.expenses.repository.TypeRepository;
@@ -32,7 +33,7 @@ public class TypeService {
     private Type findById(Long id) {
         Optional<Type> type = typeRepository.findById(id);
         if (!type.isPresent()) {
-            throw new ValidateException(String.format(messages.get("type.not.found"), id));
+            throw new NotFoundException(String.format(messages.get("type.not.found"), id));
         }
         return type.get();
     }

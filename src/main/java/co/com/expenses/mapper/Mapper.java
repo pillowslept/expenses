@@ -21,6 +21,7 @@ public class Mapper extends ResponseEntityExceptionHandler {
             ValidateException ex) {
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex);
         LOGGER.error(ex.getMessage(), ex);
+
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
@@ -29,6 +30,7 @@ public class Mapper extends ResponseEntityExceptionHandler {
             NotFoundException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex);
         LOGGER.error(ex.getMessage(), ex);
+
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
