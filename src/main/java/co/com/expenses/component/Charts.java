@@ -11,6 +11,7 @@ import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.PieChart;
 import org.knowm.xchart.PieChartBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import co.com.expenses.dto.ChartSeries;
@@ -20,9 +21,10 @@ public class Charts {
 
     private static final int HEIGHT = 165;
     private static final int WIDTH = 265;
-
-    private static final String ERROR_OBTAINING_BYTES = "Ocurrió un error obteniendo los bytes para la gráfica";
     private static final Logger LOGGER = LogManager.getLogger(PdfReport.class.getName());
+
+    @Autowired
+    Messages messages;
 
     public PieChart pie(List<ChartSeries> listChartSeries, String title) {
 
@@ -43,7 +45,7 @@ public class Charts {
         try {
             bytes = BitmapEncoder.getBitmapBytes(chart, BitmapFormat.PNG);
         } catch (IOException e) {
-            LOGGER.error(ERROR_OBTAINING_BYTES, e);
+            LOGGER.error(messages.get("charts.error.bytes"), e);
         }
         return bytes;
     }

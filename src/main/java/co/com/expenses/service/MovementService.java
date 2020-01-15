@@ -87,7 +87,7 @@ public class MovementService {
         if (Validations.field(params.getDate())) {
             throw new ValidateException(String.format(messages.get(DEFAULT_FIELD_VALIDATION), "date"));
         }
-        dateUtilities.validateStringInFormat(params.getDate());
+        dateUtilities.toTimestamp(params.getDate());
     }
 
     public Movement validateAndFind(Long id) {

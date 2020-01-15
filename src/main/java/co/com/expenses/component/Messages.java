@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class Messages {
 
+    @Value("${app.language}")
+    private String language;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -33,7 +37,7 @@ public class Messages {
     }
 
     public String get(String code) {
-        return accessor.getMessage(code);
+        return accessor.getMessage(code, new Locale(language));
     }
 
     public String get(String code, Locale locale) {

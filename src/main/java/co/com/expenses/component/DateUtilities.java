@@ -1,5 +1,7 @@
 package co.com.expenses.component;
 
+import static co.com.expenses.util.Constants.DEFAULT_DATE_FORMAT;
+import static co.com.expenses.util.Constants.FIRST_DAY_OF_MONTH;
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
@@ -15,6 +17,7 @@ import java.util.Locale;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import co.com.expenses.exception.ValidateException;
@@ -22,18 +25,18 @@ import co.com.expenses.exception.ValidateException;
 @Component
 public class DateUtilities {
 
-    private static final int FIRST_DAY_OF_MONTH = 1;
-    private static final String DATE_FORMAT_NOT_VALID = "La fecha <%s> no se encuentra en el formato <%s>";
-    private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
     private static final Logger LOGGER = LogManager.getLogger(DateUtilities.class.getName());
 
+    @Autowired
+    Messages messages;
+
     public String timestampToString(Timestamp timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
         return dateFormat.format(timestamp);
     }
 
     public String dateToString(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
         return dateFormat.format(date);
     }
 
@@ -46,29 +49,19 @@ public class DateUtilities {
     }
 
     public Timestamp toTimestamp(String dateInFormat){
-        DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
+        DateFormat format = new SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.getDefault());
         format.setLenient(Boolean.FALSE);
 
         Date date = null;
         try {
             date = format.parse(dateInFormat);
         } catch (ParseException e) {
-            LOGGER.info(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT), e);
-            throw new ValidateException(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT));
+            String message = String.format(messages.get("date.format.not.valid"), dateInFormat, DEFAULT_DATE_FORMAT);
+            LOGGER.info(message, e);
+            throw new ValidateException(message);
         }
 
         return new Timestamp(date.getTime());
-    }
-
-    public void validateStringInFormat(String dateInFormat){
-        DateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
-        format.setLenient(Boolean.FALSE);
-        try {
-            format.parse(dateInFormat);
-        } catch (ParseException e) {
-            LOGGER.info(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT), e);
-            throw new ValidateException(String.format(DATE_FORMAT_NOT_VALID, dateInFormat, DATE_FORMAT));
-        }
     }
 
     public Date obtainBeginingOfDate(int month) {
