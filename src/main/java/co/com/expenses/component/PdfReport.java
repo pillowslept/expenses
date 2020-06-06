@@ -43,7 +43,6 @@ public class PdfReport {
     private static final String TOTAL_TITLE = "Total";
     private static final String EXPENSES_TITLE = "Egresos";
     private static final String INCOMES_TITLE = "Ingresos";
-    private static final String ERROR_GENERATING_PDF = "Ocurrió un error en la generación del PDF";
     private static final String REPORT_NAME = "REPORTE DE MOVIMIENTOS";
 
     private static final Logger LOGGER = LogManager.getLogger(PdfReport.class.getName());
@@ -56,6 +55,9 @@ public class PdfReport {
 
     @Autowired
     DateUtilities dateUtilities;
+
+    @Autowired
+    Messages messages;
 
     public ByteArrayInputStream generate(List<MovementSummary> movementsSummary, ReportInformation reportInformation) {
         Document document = new Document();
@@ -94,7 +96,7 @@ public class PdfReport {
             document.add(printCharts(movementsSummary, incomeCategories, expenseCategories));
             document.close();
         } catch (DocumentException ex) {
-            LOGGER.error(String.format(ERROR_GENERATING_PDF), ex);
+            LOGGER.error(messages.get("pdf.error.generating"), ex);
         }
         return new ByteArrayInputStream(out.toByteArray());
     }

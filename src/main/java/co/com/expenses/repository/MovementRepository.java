@@ -16,7 +16,7 @@ public interface MovementRepository extends JpaRepository<Movement, Long> {
     List<Movement> findAllByOrderByCreationDateAsc();
 
     List<Movement> findByCreationDateBetweenOrderByCreationDateAsc(Date startDate, Date endDate);
-    
+
     Page<Movement> findAll(Pageable pageable);
 
     List<Movement> findByCreationDateBetweenOrderByCreationDateAsc(Date startDate, Date endDate, Pageable pageable);
