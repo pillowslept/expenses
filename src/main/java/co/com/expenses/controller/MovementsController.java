@@ -50,6 +50,17 @@ public class MovementsController {
         return this.buildResponse(movementService.findByCreationDateBetween(month, year, pageNumber, pageSize));
     }
 
+    @RequestMapping(value = "/filters", method = RequestMethod.GET)
+    public ResponseEntity<SuccessResponse> byFilters(
+            @RequestParam(name = "value", required = false) Long value,
+            @RequestParam(name = "year", required = false) Integer year,
+            @RequestParam(name = "month", required = false) Integer month,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber) {
+
+        return this.buildResponse(movementService.byFilters(value, month, year, pageSize, pageNumber));
+    }
+
     private ResponseEntity<SuccessResponse> buildResponse(Object data) {
         return new ResponseEntity<>(SuccessResponse.builder().data(data).build(), HttpStatus.OK);
     }
