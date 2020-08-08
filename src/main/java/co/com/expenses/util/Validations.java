@@ -15,6 +15,15 @@ public class Validations {
         return field == null || field <= 0;
     }
 
+    /**
+     * 
+     * @param field integer
+     * @return true if the parameter is null or less or equal to zero
+     */
+    public static boolean field(Integer field) {
+        return field == null || field <= 0;
+    }
+
     public static boolean field(List<?> list) {
         return list == null || list.isEmpty();
     }

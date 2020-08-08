@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.com.expenses.component.DateUtilities;
 import co.com.expenses.component.Messages;
 import co.com.expenses.dto.MovementSummary;
+import co.com.expenses.dto.PageableSummary;
 import co.com.expenses.dto.Params;
 import co.com.expenses.exception.NotFoundException;
 import co.com.expenses.exception.ValidateException;
@@ -25,6 +27,7 @@ import co.com.expenses.model.Category;
 import co.com.expenses.model.Movement;
 import co.com.expenses.model.Type;
 import co.com.expenses.repository.MovementRepository;
+import co.com.expenses.specifications.MovementFilterSpecification;
 import co.com.expenses.util.ObjectMapperUtils;
 import co.com.expenses.util.Validations;
 
@@ -175,6 +178,28 @@ public class MovementService {
         }
 
         return movementsSummary;
+    }
+
+    public PageableSummary byFilters(Long value, Integer month, Integer year, Integer pageSize, Integer pageNumber) {
+        boolean areValidDates = month != null && year != null;
+        Date startDate = areValidDates ? dateUtilities.obtainBeginingOfDate(month.intValue(), year) : null;
+        Date endDate = areValidDates ? dateUtilities.obtainEndOfDate(month.intValue(), year) : null;
+        Pageable pageable = this.buildPageable(pageSize, pageNumber);
+
+        Page<Movement> paged = movementRepository
+                .findAll(
+                        Specification.where(MovementFilterSpecification.withFilter(value, "value"))
+                                .and(MovementFilterSpecification.withFilterBetween(startDate, endDate, "creationDate")),
+                        pageable);
+
+        return ObjectMapperUtils.map(paged, PageableSummary.class);
+    }
+
+    private Pageable buildPageable(Integer pageSize, Integer pageNumber) {
+        int size = !Validations.field(pageSize) ? pageSize.intValue() : 10;
+        int page = !Validations.field(pageNumber) ? pageNumber.intValue() : 0;
+
+        return PageRequest.of(page, size);
     }
 
     private List<MovementSummary> mapResults(List<Movement> results) {
