@@ -56,9 +56,10 @@ public class MovementsController {
             @RequestParam(name = "year", required = false) Integer year,
             @RequestParam(name = "month", required = false) Integer month,
             @RequestParam(name = "pageSize", required = false) Integer pageSize,
-            @RequestParam(name = "pageNumber", required = false) Integer pageNumber) {
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(name = "sortType", required = false) String sortType) {
 
-        return this.buildResponse(movementService.byFilters(value, month, year, pageSize, pageNumber));
+        return this.buildResponse(movementService.byFilters(value, month, year, pageSize, pageNumber, sortType));
     }
 
     private ResponseEntity<SuccessResponse> buildResponse(Object data) {
