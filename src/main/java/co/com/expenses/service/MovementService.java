@@ -2,6 +2,7 @@ package co.com.expenses.service;
 
 import static co.com.expenses.util.Constants.DEFAULT_FIELD_VALIDATION;
 import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 import java.time.Month;
 import java.util.Date;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -180,11 +182,11 @@ public class MovementService {
         return movementsSummary;
     }
 
-    public PageableSummary byFilters(Long value, Integer month, Integer year, Integer pageSize, Integer pageNumber) {
+    public PageableSummary byFilters(Long value, Integer month, Integer year, Integer pageSize, Integer pageNumber, String sortType) {
         boolean areValidDates = month != null && year != null;
         Date startDate = areValidDates ? dateUtilities.obtainBeginingOfDate(month.intValue(), year) : null;
         Date endDate = areValidDates ? dateUtilities.obtainEndOfDate(month.intValue(), year) : null;
-        Pageable pageable = this.buildPageable(pageSize, pageNumber);
+        Pageable pageable = this.buildPageable(pageSize, pageNumber, sortType);
 
         Page<Movement> paged = movementRepository
                 .findAll(
@@ -195,11 +197,15 @@ public class MovementService {
         return ObjectMapperUtils.map(paged, PageableSummary.class);
     }
 
-    private Pageable buildPageable(Integer pageSize, Integer pageNumber) {
+    private Pageable buildPageable(Integer pageSize, Integer pageNumber, String sortType) {
         int size = !Validations.field(pageSize) ? pageSize.intValue() : 10;
         int page = !Validations.field(pageNumber) ? pageNumber.intValue() : 0;
 
-        return PageRequest.of(page, size);
+        return PageRequest.of(page, size, this.getSortType(sortType), "creationDate");
+    }
+    
+    private Direction getSortType(String sortType) {
+        return !Validations.field(sortType) && sortType.equalsIgnoreCase(DESC.toString()) ? DESC : ASC;
     }
 
     private List<MovementSummary> mapResults(List<Movement> results) {
