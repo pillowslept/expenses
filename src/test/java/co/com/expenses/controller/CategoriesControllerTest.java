@@ -19,7 +19,7 @@ import co.com.expenses.dto.SuccessResponse;
 import co.com.expenses.service.CategoryService;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CategoryControllerTest {
+public class CategoriesControllerTest {
 
     @InjectMocks
     CategoriesController categoryController;
@@ -80,7 +80,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void findAllTes() {
+    public void findAllTest() {
         // arrange
         Params params = new Params();
         params.setDescription("Ropa");

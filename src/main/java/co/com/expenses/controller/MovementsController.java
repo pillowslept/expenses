@@ -36,20 +36,6 @@ public class MovementsController {
         return this.buildResponse(movementService.findByIdMapped(id));
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<SuccessResponse> findAllPageable(
-            @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false) Integer pageSize) {
-        return this.buildResponse(movementService.findAll(pageNumber, pageSize));
-    }
-
-    @RequestMapping(value = "/month/{month:[1-9]|1[0-2]}/year/{year:^[0-9]{4}$}", method = RequestMethod.GET)
-    public ResponseEntity<SuccessResponse> byMonthAndYear(@PathVariable("month") int month,
-            @PathVariable("year") int year, @RequestParam(name = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false) Integer pageSize) {
-        return this.buildResponse(movementService.findByCreationDateBetween(month, year, pageNumber, pageSize));
-    }
-
     @RequestMapping(value = "/filters", method = RequestMethod.GET)
     public ResponseEntity<SuccessResponse> byFilters(
             @RequestParam(name = "value", required = false) Long value,

@@ -18,90 +18,92 @@ The **`application.yml`** contains some basic configurations, such as port, cont
 
 Port **`9000`** and context path **`Expenses`** are in use
 
+> localhost:9000/Expenses
+
 ### Categories
 
 ```
-{host}/api/categories/ *GET*
+/api/categories/ *GET*
 ```
 
 ```
-{host}/api/categories/{id} *GET*
+/api/categories/{id} *GET*
 ```
 
 ```
-{host}/api/categories/ *POST*
+/api/categories/ *POST*
 ```
 
 ```
-{host}/api/categories/{id} *PUT*
+/api/categories/{id} *PUT*
 ```
 
 ```
-{host}/api/categories/{id}/activate *PUT*
+/api/categories/{id}/activate *PUT*
 ```
 
 ```
-{host}/api/categories/{id}/inactivate *PUT*
+/api/categories/{id}/inactivate *PUT*
 ```
 
 ### Types
 
 ```
-{host}/api/types/ *GET*
+/api/types/ *GET*
 ```
 
 ```
-{host}/api/types/ *POST*
+/api/types/ *POST*
 ```
 
 ```
-{host}/api/types/{id}/activate *PUT*
+/api/types/{id}/activate *PUT*
 ```
 
 ```
-{host}/api/types/{id}/inactivate *PUT*
+/api/types/{id}/inactivate *PUT*
 ```
 
 ### Movements
 
 ```
-{host}/api/movements/{id} *GET*
+/api/movements/{id} *GET*
 ```
 
 ```
-{host}/api/movements (pageNumber and pageSize optional as query) *GET*
+/api/movements/filters (pageNumber, pageSize, value, year, month and sortType optional as query) *GET*
 ```
 
 ```
-{host}/api/movements/month/{month}/year/{year} (pageNumber and pageSize optional as query) *GET*
+/api/movements/ *POST*
 ```
 
 ```
-{host}/api/movements/ *POST*
+/api/movements/{id} *PUT*
 ```
 
 ### PDF reports
 
 ```
-{host}/api/pdf/reports/generate *GET*
+/api/pdf/reports/generate *GET*
 ```
 
 ```
-{host}/api/pdf/reports/month/{month} *GET*
+/api/pdf/reports/month/{month} *GET*
 ```
 
 ```
-{host}/api/pdf/reports/year/{year} *GET*
+/api/pdf/reports/year/{year} *GET*
 ```
 
 ```
-{host}/api/pdf/reports/month/{month}/year/{year} *GET*
+/api/pdf/reports/month/{month}/year/{year} *GET*
 ```
 
 ### XLS reports
 
 ```
-{host}/api/excel/reports/month/{month}/year/{year} *GET*
+/api/excel/reports/month/{month}/year/{year} *GET*
 ```
 
 > **month** from **1** to **12**
