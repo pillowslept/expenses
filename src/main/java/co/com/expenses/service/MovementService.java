@@ -119,21 +119,6 @@ public class MovementService {
         return this.mapMovement(movement);
     }
 
-    public List<MovementSummary> findAll(Integer pageNumber, Integer pageSize) {
-        List<MovementSummary> movementsSummary;
-        if (this.applyPaginable(pageSize)) {
-            movementsSummary = this.findAllPageable(pageNumber, pageSize);
-        } else {
-            movementsSummary = this.findAllByOrderByCreationDateAsc();
-        }
-
-        return movementsSummary;
-    }
-
-    private boolean applyPaginable(Integer pageSize) {
-        return pageSize != null && pageSize.intValue() != 0;
-    }
-
     public List<MovementSummary> findAllByOrderByCreationDateAsc() {
         return this.mapResults(movementRepository.findAllByOrderByCreationDateAsc());
     }
@@ -157,29 +142,6 @@ public class MovementService {
         Date endDate = dateUtilities.obtainEndOfDate(month, year);
 
         return this.mapResults(movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
-    }
-
-    public List<MovementSummary> findAllPageable(int pageNumber, int pageSize) {
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, ASC, "creationDate");
-        Page<Movement> movements = movementRepository.findAll(pageable);
-
-        return this.mapResults(movements.getContent());
-    }
-
-    public List<MovementSummary> findByCreationDateBetween(int month, int year, Integer pageNumber, Integer pageSize) {
-        List<MovementSummary> movementsSummary;
-        Date startDate = dateUtilities.obtainBeginingOfDate(month, year);
-        Date endDate = dateUtilities.obtainEndOfDate(month, year);
-        if (this.applyPaginable(pageSize)) {
-            Pageable pageable = PageRequest.of(pageNumber, pageSize);
-            movementsSummary = this.mapResults(
-                    movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate, pageable));
-        } else {
-            movementsSummary = this.mapResults(
-                    movementRepository.findByCreationDateBetweenOrderByCreationDateAsc(startDate, endDate));
-        }
-
-        return movementsSummary;
     }
 
     public PageableSummary byFilters(Long value, Integer month, Integer year, Integer pageSize, Integer pageNumber, String sortType) {
